@@ -49,6 +49,45 @@
   .tabs button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 4px;font-size:13px;font-weight:700;font-family:inherit;color:var(--ink-soft);cursor:pointer}
   .tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 
+  /* コース切替 */
+  .courses{max-width:560px;margin:0 auto;padding:8px 16px 0;display:flex;gap:8px}
+  .courses button{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:13px;padding:10px 6px;font-size:14px;font-weight:700;font-family:inherit;color:var(--ink-soft);cursor:pointer}
+  .courses button .cv{display:block;font-size:10px;font-weight:400;margin-top:1px;color:#1d6b8c}
+  .courses button[data-course="a100"].on{background:#2b2b2e;color:#fff;border-color:#2b2b2e}
+  .courses button[data-course="a100"].on .cv{color:#cfe6ef}
+  .courses button[data-course="kiki"].on{background:#7d3528;color:#fff;border-color:#7d3528}
+  .courses button[data-course="kiki"].on .cv{color:#f0cfc7}
+
+  /* 危機管理：サブタブ */
+  .ksub{display:flex;gap:8px;margin:2px 0 14px}
+  .ksub button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:11px;padding:8px 4px;font-size:12.5px;font-weight:700;font-family:inherit;color:var(--ink-soft);cursor:pointer}
+  .ksub button.on{background:#7d3528;color:#fff;border-color:#7d3528}
+  .kbar{background:#f7ece9;border:1px solid #ecd5cf;border-radius:12px;padding:11px 14px;margin-bottom:14px}
+  .kbar .kt{font-family:var(--mincho);font-weight:600;font-size:15px;color:#7d3528}
+  .kbar .kd{font-size:12px;color:#8a5045;margin-top:2px}
+  .kbar .pg{height:6px;background:#ecd5cf;border-radius:3px;margin-top:8px;overflow:hidden}
+  .kbar .pg i{display:block;height:100%;background:#a8503f;border-radius:3px;transition:.4s}
+  /* 重大度バッジ */
+  .badge-crime{display:inline-block;font-size:10.5px;font-weight:700;color:#fff;background:#b15545;border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:2px}
+  .badge-manner{display:inline-block;font-size:10.5px;font-weight:700;color:#6f4f2c;background:var(--accent-soft);border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:2px}
+  /* 4択 */
+  .kopt{width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 12px;font-size:13.5px;font-family:inherit;margin-bottom:7px;cursor:pointer;transition:.12s;line-height:1.5;display:flex;gap:8px}
+  .kopt .num{font-weight:700;color:var(--ink-soft);flex-shrink:0}
+  .kopt:active{transform:scale(.99)}
+  .kopt.correct{background:#eef4ef;border-color:var(--ok);color:#235038;font-weight:700}
+  .kopt.correct .num{color:var(--ok)}
+  .kopt.wrong{background:#f7ece9;border-color:var(--ng);color:#7d3528}
+  .kopt.sel{border-color:#7d3528;background:#fbeeea}
+  /* 修了証 */
+  .cert{background:linear-gradient(160deg,#fffdf8,#f4ece0);border:2px solid var(--accent);border-radius:18px;padding:24px 20px;text-align:center;box-shadow:var(--shadow)}
+  .cert .seal{font-size:38px}
+  .cert .ct{font-family:var(--mincho);font-size:20px;color:var(--accent);font-weight:600;margin:6px 0}
+  .cert .cn{font-family:var(--mincho);font-size:22px;font-weight:600;border-bottom:1px solid var(--line);display:inline-block;padding:2px 24px 4px;margin:8px 0}
+  .cert .cmsg{font-size:13px;color:var(--ink-soft);line-height:1.7;margin-top:8px}
+  .cert input{border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:15px;font-family:inherit;text-align:center;margin:6px 0}
+  .klock{text-align:center;color:var(--ink-soft);padding:24px 16px;font-size:14px}
+  .klock .mk{font-family:var(--mincho);font-size:18px;color:var(--accent);margin-bottom:6px}
+
   .section-h{font-family:var(--mincho);font-size:15px;margin:18px 4px 10px;display:flex;align-items:center;gap:8px}
   .section-h .count{font-family:var(--gothic);font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:auto}
   .cat-band{background:var(--accent-soft);border-radius:12px;padding:11px 14px;margin-bottom:14px}
@@ -182,6 +221,11 @@
   </div>
 </header>
 
+<div class="courses">
+  <button data-course="a100" class="on">📘 当たり前100<span class="cv">100 điều đương nhiên</span></button>
+  <button data-course="kiki">⚠️ 危機管理24<span class="cv">Quản lý rủi ro</span></button>
+</div>
+
 <div class="tabs">
   <button data-tab="learn" class="on">📚 まなぶ<span class="tv">Học</span></button>
   <button data-tab="do">✅ やってみる<span class="tv">Thực hành</span></button>
@@ -192,11 +236,12 @@
   <div id="view-learn"></div>
   <div id="view-do" style="display:none"></div>
   <div id="view-map" style="display:none"></div>
+  <div id="view-kiki" style="display:none"></div>
 
   <footer>
     記録は端末内にだけ保存されます（誰にも送信されません）。<br>
     Dữ liệu chỉ lưu trên thiết bị của bạn (không gửi đi đâu).<br>
-    プロトタイプ v1.1 ・ 全100項目 ／ ふりがな＋ベトナム語併記（要・山岡さん監修）<br>
+    プロトタイプ v1.2 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
     <button class="reset" onclick="resetAll()">データを消す</button>
   </footer>
 </div>
@@ -723,6 +768,11 @@ const VQ={
 };
 
 /* ============================================================
+   危機管理24（日本でしてはいけないこと）— 公式VN訳つき
+   ============================================================ */
+const KIKI=[{"no": 1, "q": "道端の木にたくさん柿がなっています。十分熟れているし、このままでは鳥に食べられてしまいそうです。正しい内容はどれですか？", "opts": ["誰も見ていないので、いくつか取って食べても良い。", "少しだけなら気づかれないので、少しだけ取って持ち帰る。", "自分は取らなかったが、友達が取っている間、誰か来ないか見張っていた。", "許可なく果実を取ることは「窃盗」にあたるため、絶対に取らない。"], "correct": 3, "reason": "土地や木は持ち主の財産です。許可なく取ると窃盗罪になります。勝手に持ち去ることは犯罪です。", "qv": "Trên cây ven đường có nhiều quả hồng. Chúng đã chín kỹ và nếu để vậy có vẻ sẽ bị chim ăn mất. Nội dung nào là đúng?", "ov": ["Vì không ai nhìn thấy nên có thể hái vài quả ăn cũng được.", "Hái một ít mang về thì chắc không bị phát hiện nên không sao.", "Mình không hái, nhưng đứng canh chừng để xem có ai đến khi bạn mình hái hay không.", "Vì hái trái cây mà không có sự cho phép là hành vi “trộm cắp”, nên tuyệt đối không được hái."], "rv": "Đất và cây đều là tài sản của chủ sở hữu. Hái trái cây mà không xin phép sẽ bị coi là hành vi trộm cắp. Việc tự ý mang đi là hành vi phạm tội.", "crime": true}, {"no": 2, "q": "粗大ごみとして、まだ使えそうな自転車が道端に出されていました。正しい内容はどれですか？", "opts": ["捨ててあるものなのでもらっても問題ない。", "誰にも見られなければ持って帰ってもよい。", "収集されるまでは元の持ち主の所有物なので、持って帰ってはいけない。", "壊れていないのに捨てられてしまうのはもったいないので乗って帰る。"], "correct": 2, "reason": "ごみとして出されていても、自治体が収集するまでは元の持ち主の所有物です。勝手に持ち去ると窃盗罪になります。", "qv": "Có một chiếc xe đạp còn dùng được được đặt ở ven đường như rác cồng kềnh. Nội dung nào là đúng?", "ov": ["Vì là đồ bị vứt đi nên lấy về cũng không sao.", "Nếu không ai nhìn thấy thì mang về cũng được.", "Trước khi được thu gom, xe vẫn là tài sản của chủ cũ, nên không được mang về.", "Vì xe còn dùng được nên tiếc quá, dắt về dùng cũng không vấn đề gì."], "rv": "Dù được đặt ở ngoài để bỏ đi thì trước khi cơ quan thu gom rác thu lại, vật đó vẫn thuộc tài sản của người chủ ban đầu. Tự ý mang đi được xem là hành vi trộm cắp.", "crime": true}, {"no": 3, "q": "休みの日に、寮（アパート）に友達が３人来る予定です。正しい内容はどれですか？", "opts": ["自分の部屋なので、何も気にせず大声で騒いで楽しむ。", "窓を閉めて、声のボリュームに気をつけながら話す。", "部屋だとうるさいので、駐車場のスペースで集まって話す。", "盛り上げるため、音楽もかけて歌ったり踊ったりする。"], "correct": 1, "reason": "騒音は近隣住民とのトラブルの原因になります。迷惑防止条例違反になる可能性もあります。", "qv": "Vào ngày nghỉ, dự định có 3 người bạn đến ký túc xá (căn hộ) của bạn chơi. Nội dung nào là đúng?", "ov": ["Vì là phòng của mình nên có thể thoải mái la hét và vui chơi lớn tiếng.", "Đóng cửa sổ lại và nói chuyện với âm lượng vừa phải.", "Phòng dễ gây ồn nên tụ tập ở bãi đậu xe và nói chuyện.", "Để tăng thêm không khí, bật nhạc rồi hát hò nhảy múa."], "rv": "Tiếng ồn có thể gây rắc rối với những cư dân xung quanh và thậm chí có thể vi phạm quy định phòng chống gây phiền toái.", "crime": true}, {"no": 4, "q": "燃えるゴミの収集日は明日ですが、臭うので早く片づけたいと思います。正しい行動はどれですか？", "opts": ["早く部屋から出したいので、前夜にこっそり出す。", "収集日以外に出すとルール違反になるので、明日の朝になってから出す。", "日付が変わっていればいいので、夜0時を過ぎたらすぐ出す。", "前日でも、誰かがゴミ捨て場にゴミを出していたら自分も出して良い。"], "correct": 1, "reason": "日本ではごみの分別や収集日が厳しく決まっています。ルール違反は法律や条例で罰金が科せられることがあります。", "qv": "Ngày thu gom rác cháy được là ngày mai, nhưng rác đang bốc mùi nên bạn muốn mang ra ngoài sớm. Hành động nào là đúng?", "ov": ["Muốn bỏ ra khỏi phòng sớm nên lén mang rác ra vào tối hôm trước.", "Vì bỏ rác không đúng ngày là vi phạm quy định nên đợi đến sáng mai rồi mang ra.", "Chỉ cần qua 0 giờ là sang ngày mới, nên có thể mang rác ra ngay sau 0 giờ.", "Nếu thấy người khác bỏ rác từ hôm trước thì mình cũng có thể bỏ theo."], "rv": "Ở Nhật, việc phân loại rác và ngày thu gom được quy định rất chặt chẽ. Nếu vứt rác sai quy định hoặc sai ngày, có thể bị xem là vi phạm pháp luật hoặc vi phạm quy định của địa phương và bị phạt tiền.", "crime": true}, {"no": 5, "q": "近所の畑に綺麗な花が咲いていす。写真を撮りたいのですが、道路からでは遠くて上手くに撮れません。柵は無いので入っても良いでしょうか？", "opts": ["写真を撮るだけなら、畑の敷地内に入って撮影しても良い。", "畑の周りに柵が無いということは入っても問題ないので入って撮影する。", "敷地に入ってはいけないので、敷地外の邪魔にならない所から撮影する。", "誰もいなければ入っても良いので、写真を撮っても花を採取してもよい。"], "correct": 2, "reason": "他人の土地に許可なく入ることは不法侵入になります。", "qv": "Gần nhà bạn có một ruộng trồng hoa rất đẹp. Bạn muốn chụp ảnh nhưng từ ngoài đường thì quá xa, không chụp rõ được. Vì không có hàng rào, liệu bạn có thể vào trong ruộng để chụp ảnh không?", "ov": ["Vì chỉ chụp ảnh nên có thể vào trong ruộng để chụp.", "Vì xung quanh ruộng không có hàng rào nên vào chụp cũng không sao.", "Không được vào đất của người khác, nên phải chụp từ bên ngoài, nơi không gây cản trở.", "Nếu không có ai thì có thể vào chụp, thậm chí hái hoa cũng được."], "rv": "Tự ý vào đất của người khác mà không có sự cho phép là hành vi xâm nhập trái phép.", "crime": false}, {"no": 6, "q": "母国では合法的に使える薬物がありますが、日本では違法です。正しい内容はどれですか？", "opts": ["自分の部屋で個人的に使うだけなら、使っても問題ない。", "日本には決して持ち込まず、日本国内でも手を出さない。", "友達から「外国人に日本の法律は適用されない」と教えてもらったので使ってみる。", "友達の部屋に遊びに行った時に勧められた。その場で１回だけなら問題ない。"], "correct": 1, "reason": "日本の法律は外国人にも適用されます。日本の法律で違法な薬物は絶対に手を出してはいけません。重い刑罰や強制送還の対象になります。", "qv": "Ở nước bạn có một số loại chất kích thích/thuốc được dùng hợp pháp, nhưng ở Nhật thì là bất hợp pháp. Nội dung nào dưới đây là đúng?", "ov": ["Nếu chỉ dùng một mình trong phòng riêng thì không sao.", "Tuyệt đối không mang sang Nhật và cũng không được sử dụng tại Nhật.", "Bạn nói rằng “luật Nhật không áp dụng cho người nước ngoài”, nên thử dùng xem sao.", "Khi đến phòng bạn bè chơi và được rủ dùng thử, nếu chỉ dùng một lần thì không vấn đề gì."], "rv": "Luật pháp Nhật Bản áp dụng cho cả người nước ngoài. Các loại chất kích thích bị cấm theo luật Nhật thì tuyệt đối không được sử dụng. Vi phạm có thể dẫn đến hình phạt nặng hoặc bị trục xuất.", "crime": true}, {"no": 7, "q": "日本の運転免許は持っていませんが、バイクの運転経験はあります。同僚が「免許がなくてもバイクなら大丈夫」と言っていました。正しい内容はどれですか？", "opts": ["母国で運転していてバイク運転は得意なので、運転しても良い。", "無免許運転は法律違反なので、絶対に運転しない。", "交通量が少なく短い距離なら運転しても問題ない。", "警察官に見つからないように、夜だけ運転する。"], "correct": 1, "reason": "日本では、車やバイクを運転するには日本の免許が必要です。無免許運転は法律違反（道路交通法違反）です。", "qv": "Tôi không có bằng lái xe của Nhật, nhưng tôi có kinh nghiệm lái xe máy. Một đồng nghiệp nói rằng “dù không có bằng lái, cũng không sao nếu là xe máy”. Vậy nội dung nào dưới đây là đúng? Vì tôi đã lái xe ở nước mình và rất giỏi nên có thể lái ở Nhật. Không có bằng lái là hành vi vi phạm pháp luật, nên tuyệt đối không được lái. Nếu chỉ lái quãng ngắn ở nơi ít xe thì không sao.", "ov": ["Chỉ cần lái vào ban đêm để tránh bị cảnh sát phát hiện.", "Đáp án: 2", "Lý do: Ở Nhật Bản, để lái ô tô hoặc xe máy, bắt buộc phải có bằng lái xe của Nhật.", "Lái xe không bằng là vi phạm pháp luật (vi phạm Luật Giao thông đường bộ) và sẽ bị xử phạt nặng."], "rv": "Ở Nhật Bản, để lái ô tô hoặc xe máy, bắt buộc phải có bằng lái xe của Nhật. Lái xe không bằng là vi phạm pháp luật (vi phạm Luật Giao thông đường bộ) và sẽ bị xử phạt nặng.", "crime": true}, {"no": 8, "q": "電車に乗っている時に、友達から電話がかかってきました。正しい内容はどれですか？", "opts": ["座席だと迷惑なので、立って人の少ない場所で電話に出る。", "周りの迷惑にならないように、小さな声で話せば電話に出ても良い。", "電話での通話はマナー違反なので出ず、メールで連絡するか、後でかけ直す。", "母国語で話せば周りの人にはわからないだろうと思い、普通に電話で話す。"], "correct": 2, "reason": "公共交通機関では、他の乗客に配慮して静かにすることがマナーです。", "qv": "Khi đang đi tàu điện, bạn nhận được cuộc gọi từ một người bạn. Nội dung nào dưới đây là đúng? Vì ngồi nói chuyện sẽ gây phiền, nên đứng dậy và ra chỗ ít người để nghe điện thoại. Nếu nói nhỏ để không làm phiền người xung quanh thì có thể nghe điện thoại.", "ov": ["Nói chuyện điện thoại trên tàu là hành vi không đúng mực, nên không nghe máy. Hãy liên lạc bằng tin nhắn hoặc gọi lại sau.", "Nghĩ rằng nếu nói bằng tiếng mẹ đẻ thì người xung quanh không hiểu, nên cứ nói chuyện bình thường.", "Đáp án: 3", "Lý do：Trong các phương tiện giao thông công cộng, giữ yên lặng và không làm phiền người khác là phép lịch sự quan trọng. Vì vậy, không nên nghe điện thoại trên tàu điện."], "rv": "Trong các phương tiện giao thông công cộng, giữ yên lặng và không làm phiền người khác là phép lịch sự quan trọng. Vì vậy, không nên nghe điện thoại trên tàu điện.", "crime": false}, {"no": 9, "q": "自分で契約したアパートに、友達が「しばらく泊めてほしい」と言ってやって来ました。しばらく泊めてあげても問題ないですか？", "opts": ["自分の部屋なので、泊めてあげても問題ない。", "契約違反になるか確認するため、事前に大家さんに相談する。", "誰かに言うと問題になるかもしれないので、隠して泊まらせてあげる。", "しばらくの間だけで、ずっと一緒に住むわけではないので問題ない。"], "correct": 1, "reason": "賃貸契約書で同居が禁止されていることが多く、無断で住まわせると契約違反になり、退去を求められることがあります。", "qv": "Bạn của bạn đến và nói: “Cho mình ở nhờ một thời gian được không?” tại căn hộ mà bạn đã đứng tên hợp đồng thuê. Việc cho bạn ở nhờ một thời gian như vậy có vấn đề không? Vì đây là phòng của mình nên cho ở nhờ cũng không có vấn đề. Để xác nhận xem có vi phạm hợp đồng hay không, cần trao đổi trước với chủ nhà.", "ov": ["Nếu nói cho ai biết có thể gây rắc rối, nên lén cho ở nhờ.", "Chỉ là ở tạm thời, không phải sống chung lâu dài, nên không có vấn đề.", "Đáp án: 2", "Lý do：Trong nhiều hợp đồng thuê nhà tại Nhật, thường quy định cấm cho người khác đến ở chung. Nếu tự ý cho bạn ở mà không xin phép, bạn có thể vi phạm hợp đồng và bị yêu cầu rời khỏi nhà."], "rv": "Trong nhiều hợp đồng thuê nhà tại Nhật, thường quy định cấm cho người khác đến ở chung. Nếu tự ý cho bạn ở mà không xin phép, bạn có thể vi phạm hợp đồng và bị yêu cầu rời khỏi nhà.", "crime": true}, {"no": 10, "q": "働きはじめましたが給料が少し低いと感じます。不足分を稼ぐために、友達が飲食店でのアルバイトを紹介してくれました。正しい内容はどれですか？", "opts": ["生活費のためには仕方ないので、許可を得ずアルバイトをする。", "会社の許可が必要だが、見つからないよう黙ってアルバイトをすれば良い。", "在留資格で認められている以外の活動は違法なので、アルバイトをしてはいけない。", "お金を稼ぐことは良いことなので、アルバイトをしても問題ない。"], "correct": 2, "reason": "技能実習や特定の在留資格では、認められた仕事以外で働くことは入管法違反になる可能性があります。", "qv": "Bạn đã bắt đầu đi làm nhưng cảm thấy mức lương hơi thấp. Một người bạn giới thiệu cho bạn một công việc làm thêm tại quán ăn để kiếm thêm phần còn thiếu. Nội dung nào dưới đây là đúng? Vì cần tiền sinh hoạt nên không còn cách nào khác, cứ đi làm thêm mà không xin phép. Cần xin phép công ty, nhưng nếu làm thêm kín đáo để không bị phát hiện thì vẫn được.", "ov": ["Các hoạt động ngoài phạm vi mà tư cách lưu trú cho phép đều là bất hợp pháp, nên không được đi làm thêm.", "Kiếm tiền là điều tốt, nên làm thêm cũng không có vấn đề.", "Đáp án: 3", "Lý do：Với tư cách lưu trú như Thực tập sinh kỹ năng hoặc một số tư cách khác, làm việc ngoài nội dung được phép có thể bị xem là vi phạm Luật Nhập cư Nhật Bản, dẫn đến xử phạt hoặc bị buộc về nước."], "rv": "Với tư cách lưu trú như Thực tập sinh kỹ năng hoặc một số tư cách khác, làm việc ngoài nội dung được phép có thể bị xem là vi phạm Luật Nhập cư Nhật Bản, dẫn đến xử phạt hoặc bị buộc về nước.", "crime": true}, {"no": 11, "q": "お金を使いすぎてお金が足りなくなってしまいました。SNSで「すぐにお金貸します」という広告を見つけました。正しい内容はどれですか？", "opts": ["すぐにお金が必要なので、その広告から業者に連絡する。", "違法な業者かもしれないので、安易に広告を信用しない。", "借金は個人的な問題なので、どこから借りても問題にはならない。", "SNS広告は利用しないけれど、同僚からお金を借りるのは問題ない。"], "correct": 1, "reason": "違法な高金利の貸金業者（ヤミ金）である可能性が高く、犯罪に巻き込まれる危険があります。困ったら会社や公的機関に相談してください。同僚や先輩に借金するのも避けましょう。トラブルの原因になります。", "qv": "Bạn đã tiêu quá nhiều và không còn đủ tiền. Bạn thấy một quảng cáo trên mạng xã hội với nội dung “Cho vay tiền ngay lập tức”. Nội dung nào dưới đây là đúng? Vì cần tiền gấp nên liên hệ ngay với dịch vụ trong quảng cáo đó. Có thể là dịch vụ cho vay bất hợp pháp, nên không được tin vào quảng cáo một cách dễ dãi. Vay tiền là vấn đề cá nhân, nên vay ở đâu cũng không sao. Không sử dụng quảng cáo trên mạng xã hội, nhưng vay tiền từ đồng nghiệp thì không có vấn đề.", "ov": ["Đáp án: 2", "Lý do：Khả năng cao đó là dịch vụ cho vay nặng lãi, trái pháp luật , rất dễ dẫn đến việc bị lừa đảo hoặc vướng vào tội phạm.", "Nếu gặp khó khăn, hãy trao đổi với công ty hoặc các cơ quan hỗ trợ công.", "Ngoài ra, cũng không nên vay tiền của đồng nghiệp hay đàn anh, vì rất dễ phát sinh rắc rối."], "rv": "Khả năng cao đó là dịch vụ cho vay nặng lãi, trái pháp luật , rất dễ dẫn đến việc bị lừa đảo hoặc vướng vào tội phạm. Nếu gặp khó khăn, hãy trao đổi với công ty hoặc các cơ quan hỗ trợ công. Ngoài ra, cũng không nên vay tiền của đồng nghiệp hay đàn anh, vì rất dễ phát sinh rắc rối.", "crime": true}, {"no": 12, "q": "タバコを吸いたいのですが、喫煙場所が分かりません。正しい内容はどれですか？", "opts": ["喫煙できる場所をスマートフォンで検索し、指定の場所で吸う。", "他人がいなければ問題ないので、人がいない場所で吸う。", "携帯灰皿を持っていれば、路上で喫煙しても良い。", "周りに人がいない公園で吸う。"], "correct": 0, "reason": "日本では喫煙場所が厳しく決められています。指定場所以外での喫煙は法律や条例で罰金が科せられます。", "qv": "Bạn muốn hút thuốc nhưng không biết khu vực được phép hút ở đâu. Nội dung nào dưới đây là đúng?", "ov": ["Tìm bằng điện thoại nơi được phép hút thuốc và hút ở khu vực quy định.", "Nếu không có ai xung quanh thì không sao, nên hút ở nơi không có người.", "Nếu mang theo gạt tàn di động thì có thể hút thuốc trên đường.", "Hút ở công viên nơi không có người xung quanh."], "rv": "Ở Nhật Bản, khu vực hút thuốc được quy định rất nghiêm ngặt. Hút thuốc ở nơi không được phép có thể bị phạt theo luật hoặc quy định của địa phương. Vì vậy cần hút đúng nơi được chỉ định.", "crime": true}, {"no": 13, "q": "ペットボトル飲料を飲み終わりました。周りにゴミ箱がありません。正しい内容はどれですか？", "opts": ["誰も見ていないので、植え込みの中に捨てても良い。", "ポイ捨ては法律違反なので、家に持って帰る。", "道端に置いておけば誰かが片付けてくれるので、道端に置けばよい。", "ペットボトルはリサイクルに出すが、小さなゴミなら道端に捨てても問題ない。"], "correct": 1, "reason": "ゴミのポイ捨ては法律や条例で禁止されており、罰金が科せられます。", "qv": "Bạn uống xong một chai nước PET nhưng xung quanh không có thùng rác. Nội dung nào là đúng?", "ov": ["Vì không có ai nhìn thấy, nên vứt vào bụi cây cũng được.", "Vứt rác bừa bãi là vi phạm pháp luật, nên phải mang rác về nhà.", "Nếu để ở lề đường thì sẽ có người dọn, nên có thể để ở đó.", "Chai PET thì đem đi tái chế, còn rác nhỏ thì vứt ở lề đường cũng không sao."], "rv": "Việc vứt rác bừa bãi bị cấm bởi luật và quy định địa phương, và có thể bị phạt tiền.", "crime": true}, {"no": 14, "q": "遅刻しそうで急いで自転車をこいでいます。信号が赤ですが、車も人もいません。正しい内容はどれですか？", "opts": ["誰も見ていないので、そのまま渡っても問題ない。", "急いでいるので１回は仕方がない。車が来ていないことを確認して進む。", "自転車は車ではないので、信号は無視しても大丈夫だから、そのまま進む。", "信号無視は法律違反なので、青になるまで待つ。"], "correct": 3, "reason": "自転車も道路交通法のルールに従う必要があります。信号無視は事故の原因になり、罰金の対象にもなります。", "qv": "Bạn đang đạp xe vội vì sắp trễ. Đèn tín hiệu đang đỏ nhưng không có xe hay người. Nội dung nào là đúng?", "ov": ["Không có ai nhìn nên đi qua luôn cũng không sao.", "Đang vội nên một lần thì không sao, chỉ cần kiểm tra không có xe rồi đi tiếp.", "Xe đạp không phải ô tô nên không cần tuân thủ đèn tín hiệu, cứ đi luôn.", "Vượt đèn đỏ là vi phạm luật, nên phải đợi đến khi đèn xanh."], "rv": "Xe đạp cũng phải tuân thủ Luật Giao thông Đường bộ. Vượt đèn đỏ dễ gây tai nạn và có thể bị phạt.", "crime": true}, {"no": 15, "q": "週末友達と集まって、寮の近くの広場で花火をする計画です。正しい内容はどれですか？", "opts": ["夜遅くなければ、少しくらい騒いで花火をしても良い。", "火災の危険や騒音を考え、花火は避ける。", "他のグループもやっていれば、こちらも花火をして良い。", "水の入ったバケツなどしっかり用意をしていれば問題ない。"], "correct": 1, "reason": "騒音や火災の危険があり、近隣住民に迷惑をかけます。通報される可能性があります。", "qv": "Cuối tuần bạn dự định cùng bạn bè bắn pháo hoa ở quảng trường gần ký túc xá. Nội dung nào là đúng?", "ov": ["Nếu không quá khuya thì làm ồn một chút khi bắn pháo hoa cũng được.", "Nên tránh bắn pháo hoa vì nguy cơ cháy và gây tiếng ồn.", "Nếu nhóm khác cũng làm thì nhóm bạn cũng có thể bắn pháo hoa.", "Chuẩn bị xô nước đầy đủ thì không có vấn đề gì."], "rv": "Pháo hoa gây tiếng ồn và nguy cơ cháy, làm phiền cư dân xung quanh. Có thể bị báo cảnh sát.", "crime": false}, {"no": 16, "q": "河川敷に生えている草や、川で釣った魚を食用に持ち帰りたいと思います。正しい内容はどれですか？", "opts": ["自然に生えた雑草や小さな魚を釣るだけなら問題ない。", "誰も見ていなければ、特に問題にはならない。", "遊びではなく食べるためなので、持って帰っても良い。", "勝手に河川敷に入ったり、魚や草を持って帰ったりすると法律違反になるのでやらない。"], "correct": 3, "reason": "漁業権や土地の所有権があるため、無許可で採取すると漁業法や河川法、窃盗罪に問われる可能性があります。", "qv": "Bạn muốn hái cỏ mọc ở bãi sông hoặc mang cá đánh được ở sông về để ăn. Nội dung nào dưới đây là đúng? Chỉ là hái cỏ tự nhiên hoặc bắt cá nhỏ thì không sao. Nếu không ai nhìn thấy thì không thành vấn đề.", "ov": ["Vì dùng để ăn nên mang về cũng được.", "Tự ý vào bãi sông, hái cỏ hoặc mang cá về là vi phạm pháp luật nên không được làm.", "Đáp án: 4", "Lý do: Vì khu vực đó có quyền khai thác thủy sản và quyền sở hữu đất, nên nếu tự ý thu hái hoặc bắt lấy mà không có phép, bạn có thể bị xử lý theo Luật Thủy sản, Luật Sông ngòi hoặc bị xem là hành vi trộm cắp."], "rv": "Vì khu vực đó có quyền khai thác thủy sản và quyền sở hữu đất, nên nếu tự ý thu hái hoặc bắt lấy mà không có phép, bạn có thể bị xử lý theo Luật Thủy sản, Luật Sông ngòi hoặc bị xem là hành vi trộm cắp.", "crime": true}, {"no": 17, "q": "会社の先輩から「身分証明書として使うから」と頼まれ、自分の在留カードを貸してほしいと言われました。正しい内容はどれですか？", "opts": ["先輩の頼みは断りづらいので、貸してあげる。", "在留カードの貸し借りは違法なので、丁寧に断る。", "犯罪行為に使われないか確認し、貸してあげる。", "他の人に知られなければ問題ないので貸す。"], "correct": 1, "reason": "在留カードの貸し借りは入管法違反です。必ず自分で管理してください。", "qv": "Một đàn anh trong công ty nhờ bạn cho mượn thẻ cư trú vì “cần dùng làm giấy tờ tùy thân”. Nội dung nào đúng? Khó từ chối nên cho mượn. Việc cho mượn thẻ cư trú là bất hợp pháp nên phải từ chối.", "ov": ["Kiểm tra xem có dùng cho việc phạm tội hay không rồi cho mượn.", "Nếu không ai biết thì cũng không sao.", "Đáp án: 2", "Lý do: Cho mượn thẻ cư trú là vi phạm Luật Nhập cư. Thẻ phải do chính chủ tự quản lý."], "rv": "Cho mượn thẻ cư trú là vi phạm Luật Nhập cư. Thẻ phải do chính chủ tự quản lý.", "crime": true}, {"no": 18, "q": "職場の同僚と意見が合わず、けんかになりました。相手を軽く殴ってしまいましたが、けがはありませんでした。正しい内容はどれですか？", "opts": ["ケンカはお互いが悪いので、特に問題ない。", "和解したし、ケガが無かったので問題ない。", "相手にケガをさせていなくても、ケンカの原因や経緯を管理者に報告する。", "おおごとにしたくないので、相手に謝って口止めする。"], "correct": 2, "reason": "たとえ軽傷でも、暴行は暴行罪、怪我をさせれば傷害罪という犯罪になります。まずは管理者に報告しましょう。法的には警察が介入する可能性があります。", "qv": "Bạn cãi nhau với đồng nghiệp và có đánh người đó một cái, nhưng không gây thương tích. Nội dung nào đúng? Cả hai đều có lỗi nên không có vấn đề gì. Đã hòa giải và không bị thương nên không sao.", "ov": ["Dù không gây thương tích, nhưng phải báo cáo quản lý về nguyên nhân và diễn biến sự việc.", "Không muốn chuyện lớn, nên xin lỗi và dặn người kia đừng nói cho ai.", "Đáp án: 3", "Lý do: Dù nhẹ cũng là hành vi bạo lực, có thể cấu thành tội bạo hành. Gây thương tích sẽ thành tội cố ý gây thương tích. Cần báo cáo quản lý và có thể cảnh sát can thiệp."], "rv": "Dù nhẹ cũng là hành vi bạo lực, có thể cấu thành tội bạo hành. Gây thương tích sẽ thành tội cố ý gây thương tích. Cần báo cáo quản lý và có thể cảnh sát can thiệp.", "crime": true}, {"no": 19, "q": "飲食店で友達と面白い動画を撮っています。もっと面白くするために、商品にいたずらする様子を撮影し、SNSに公開したいと思いました。どれが正しいですか？", "opts": ["面白い動画になるので、多くの人に見せるために公開しても良い。", "お店の許可を得ていないが、いたずら動画は人気があるので撮影して公開する。", "お店の営業妨害になる可能性があるため、絶対に撮影しない。", "顔が映っていなければ、動画を撮影して公開しても問題ない。"], "correct": 2, "reason": "お店の営業を妨害する行為とみなされ威力業務妨害罪にあたります。名誉毀損や信用毀損で訴えられる可能性もあります。", "qv": "Bạn đang quay video vui cùng bạn bè tại quán ăn và muốn quay cảnh “trêu chọc sản phẩm của quán” rồi đăng lên mạng xã hội. Nội dung nào đúng? Video sẽ vui nên đăng để nhiều người xem. Dù không xin phép quán, nhưng video đùa nghịch thường rất phổ biến nên cứ quay và đăng.", "ov": ["Có khả năng gây cản trở hoạt động kinh doanh của quán nên tuyệt đối không quay.", "Không quay mặt thì đăng lên cũng không sao.", "Đáp án: 3", "Lý do: Hành động này có thể bị coi là gây cản trở kinh doanh. Cũng có thể bị kiện vì xúc phạm danh dự hoặc làm mất uy tín."], "rv": "Hành động này có thể bị coi là gây cản trở kinh doanh. Cũng có thể bị kiện vì xúc phạm danh dự hoặc làm mất uy tín.", "crime": true}, {"no": 20, "q": "限定販売のお菓子がたくさん売っています。大量に購入してインターネットオークションで高い値段で売ってお金を稼ごうと思います。正しい内容はどれですか？", "opts": ["人気のお菓子が手に入れば喜ぶ人が多いので、転売するのは良いことだと思う。", "大量に販売すると目立ちそうなので、少量だけ転売するなら良い。", "チケットなどの転売ではないので、法律違反ではないから転売しても良い。", "買い占め行為は迷惑防止条例などに抵触する可能性があるため、やめておく。"], "correct": 3, "reason": "チケットなど一部の物を除いて、物品の転売自体は法律違反になりませんが、買い占め行為は迷惑防止条例などに抵触する可能性があります。古物商の許可なく反復継続して行うと古物営業法違反となる場合があります。", "qv": "Bạn thấy rất nhiều bánh kẹo phiên bản giới hạn. Bạn muốn mua thật nhiều rồi bán lại giá cao để kiếm tiền. Nội dung nào đúng? Nhiều người sẽ vui nếu mua được đồ mình thích, nên việc bán lại là tốt. Bán lại ít để không gây chú ý thì được.", "ov": ["Không phải vé nên không phạm pháp, có thể bán lại.", "Việc mua gom có thể vi phạm quy định phòng chống gây phiền toái, nên không làm.", "Đáp án: 4", "Lý do: Ngoại trừ một số mặt hàng như vé, việc mua rồi bán lại hàng hóa nhìn chung không phải là hành vi vi phạm pháp luật. Tuy nhiên, hành vi mua gom số lượng lớn có thể vi phạm các quy định của Luật phòng chống gây phiền toái. Nếu việc mua bán lặp đi lặp lại nhiều lần mà không có giấy phép kinh doanh đồ cũ, bạn có thể bị coi là vi phạm Luật kinh doanh đồ cũ."], "rv": "Ngoại trừ một số mặt hàng như vé, việc mua rồi bán lại hàng hóa nhìn chung không phải là hành vi vi phạm pháp luật. Tuy nhiên, hành vi mua gom số lượng lớn có thể vi phạm các quy định của Luật phòng chống gây phiền toái. Nếu việc mua bán lặp đi lặp lại nhiều lần mà không có giấy phép kinh doanh đồ cũ, bạn có thể bị coi là vi phạm Luật kinh doanh đồ cũ.", "crime": true}, {"no": 21, "q": "友達が「今日は定期券を使わないから、これを使って出かけて来ていいよ」と言ってくれました。正しい内容はどれですか？", "opts": ["電車代がもったいないので、定期券を使って電車に乗る。", "友達の親切を断るのも悪いので、ありがたく使わせてもらう。", "定期券は本人しか使えないので、自分で切符を買う。", "本来は良くないが、見つからずに改札を通れれば良い。"], "correct": 2, "reason": "定期券は記名された本人のみが使用できるものです。他人の定期券を使用すると詐欺罪にあたる可能性があります。鉄道会社から高額な運賃を請求されることもあります。", "qv": "Bạn bè bảo bạn “Hôm nay mình không dùng thẻ tháng, bạn dùng đi”. Nội dung nào đúng? Tiếc tiền vé nên dùng thẻ tháng của bạn để đi tàu. Khó từ chối nên nhận và dùng.", "ov": ["Thẻ tháng chỉ người có tên trên thẻ được dùng, nên tự mua vé.", "Dù không đúng nhưng nếu qua được cổng soát vé thì cũng được.", "Đáp án: 3", "Lý do: Thẻ tháng chỉ dành cho người sở hữu. Dùng thẻ của người khác có thể bị coi là gian lận, hoặc bị công ty tàu điện phạt tiền rất cao."], "rv": "Thẻ tháng chỉ dành cho người sở hữu. Dùng thẻ của người khác có thể bị coi là gian lận, hoặc bị công ty tàu điện phạt tiền rất cao.", "crime": true}, {"no": 22, "q": "公園で友達３人と遊んでいます。正しい内容はどれですか？", "opts": ["公園に他の利用者がいても、大きな声で騒ぐ。", "遊具の使い方が分からないが、気にせず使う。", "他の公園利用者に配慮し、ゴミを持ち帰るなど、公園のルールやマナーを守る。", "公園の施設を壊してしまっても、誰にも言わない。"], "correct": 2, "reason": "公園は公共の場所です。誰もが気持ちよく利用できるようルールやマナーを守って利用しましょう。", "qv": "Bạn chơi với 3 người bạn trong công viên. Nội dung nào đúng? Dù có người khác trong công viên vẫn la hét ồn ào. Không biết cách dùng trò chơi nhưng cứ dùng.", "ov": ["Giữ gìn quy tắc và phép lịch sự như mang rác về, để người khác cùng sử dụng thoải mái.", "Nếu làm hỏng thiết bị công viên thì không nói với ai.", "Đáp án: 3", "Lý do: Công viên là nơi công cộng, mọi người dùng chung nên phải giữ quy tắc và phép lịch sự."], "rv": "Công viên là nơi công cộng, mọi người dùng chung nên phải giữ quy tắc và phép lịch sự.", "crime": false}, {"no": 23, "q": "友達と自転車で移動します。正しい内容はどれですか？", "opts": ["急いでいるので、友達を後ろに乗せて二人乗りする。", "夜道でも、ライトを点けるとこぐのが大変になるので無灯火で走行する。", "友達と並んで、道を広がって走行する。", "二人乗りや並走は法律違反なので、一人一台、一列で走行する。"], "correct": 3, "reason": "1-3は道路交通法違反です。反則金が科される場合があります。", "qv": "Bạn đi xe đạp cùng bạn bè. Nội dung nào đúng? Đang vội nên chở bạn ngồi sau. Buổi tối đèn xe làm khó đạp nên tắt đèn khi chạy.", "ov": ["Chạy xe song song chiếm đường.", "Chở hai người hoặc chạy song song là vi phạm, phải đi một hàng, mỗi người một xe.", "Đáp án: 4", "Lý do: Các hành vi 1–3 là vi phạm Luật Giao thông Đường bộ, có thể bị phạt tiền."], "rv": "Các hành vi 1–3 là vi phạm Luật Giao thông Đường bộ, có thể bị phạt tiền.", "crime": true}, {"no": 24, "q": "「スマートフォンでできる範囲なら、オンラインカジノゲームでも遊んでも大丈夫」と友達から聞きました。正しい内容はどれですか？", "opts": ["スマホでできるカジノゲームなら問題ないと思い課金して遊ぶ。", "友達が大丈夫と言っているし少額なら課金して遊んでも良い。", "オンラインカジノは法律違反なので、スマホでもカジノゲームはやらない。", "課金してもっと強くなり、お金を稼ぐことが大切だ。"], "correct": 2, "reason": "オンラインだとしても、日本ではカジノ賭博は刑法で禁止されています。（賭博罪となります）", "qv": "Bạn nghe bạn bè nói rằng “chơi casino online trên smartphone thì không sao”. Nội dung nào đúng? Casino chơi trên điện thoại thì không vấn đề nên nạp tiền chơi. Bạn bè nói không sao nên chơi và nạp tiền ít.", "ov": ["Casino online là bất hợp pháp ở Nhật, không chơi dù trên điện thoại.", "Nạp tiền để mạnh hơn và kiếm tiền là điều quan trọng.", "Đáp án: 3", "Lý do: Casino dưới hình thức online vẫn bị coi là đánh bạc và bị cấm theo luật Nhật Bản."], "rv": "Casino dưới hình thức online vẫn bị coi là đánh bạc và bị cấm theo luật Nhật Bản.", "crime": true}];
+
+/* ============================================================
    状態管理
    ============================================================ */
 const KEY="atarimae100_v04";
@@ -736,11 +786,14 @@ function load(){
   let s=null; try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   if(!s) s={points:0,streak:0,lastActive:null,understood:{},tries:{},firstTry:{},practice:{}};
   s.understood=s.understood||{}; s.tries=s.tries||{}; s.firstTry=s.firstTry||{}; s.practice=s.practice||{};
+  s.kiki=s.kiki||{}; s.kiki.learn=s.kiki.learn||{}; s.kiki.ok=s.kiki.ok||{}; s.kiki.testAns=s.kiki.testAns||{};
   return s;
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 let state=load();
 let TAB="learn";
+let COURSE="a100";   // a100 | kiki
+let KMODE="learn";   // kiki: learn | test | cert
 let learnCat=null;   // 「まなぶ」で表示中のカテゴリ（自動で次に進めない）
 
 /* 連続日数：活動があった日に加算 */
@@ -1049,21 +1102,166 @@ function renderMap(){
 /* ============================================================
    タブ切替・トースト
    ============================================================ */
+/* ============================================================
+   危機管理24（別コース）
+   ============================================================ */
+function kikiOkCount(){ return KIKI.filter(it=>state.kiki.ok[it.no]).length; }
+
+function renderKiki(){
+  const v=document.getElementById("view-kiki"); v.innerHTML="";
+  const oc=kikiOkCount();
+  const bar=document.createElement("div"); bar.className="kbar";
+  bar.innerHTML=`<div class="kt">⚠️ 危機管理24 ／ Quản lý rủi ro</div>
+    <div class="kd">日本でしてはいけないこと（法律・マナー）。出国前に全員が理解しよう。<br>Những điều không được làm ở Nhật. Mọi người cần hiểu rõ trước khi sang Nhật.</div>
+    <div class="pg"><i style="width:${oc/24*100}%"></i></div>
+    <div class="kd" style="margin-top:5px">理解 / Đã hiểu ${oc} / 24</div>`;
+  v.appendChild(bar);
+  const sub=document.createElement("div"); sub.className="ksub";
+  sub.innerHTML=`<button data-k="learn" class="${KMODE==='learn'?'on':''}">📖 学習 / Học</button>
+    <button data-k="test" class="${KMODE==='test'?'on':''}">✅ テスト / Kiểm tra</button>
+    <button data-k="cert" class="${KMODE==='cert'?'on':''}">🎓 修了証 / Chứng nhận</button>`;
+  v.appendChild(sub);
+  sub.querySelectorAll("button").forEach(b=>b.onclick=()=>{KMODE=b.dataset.k; renderKiki(); window.scrollTo(0,0);});
+  if(KMODE==="learn") KIKI.forEach(it=>v.appendChild(kikiLearnCard(it)));
+  else if(KMODE==="test") renderKikiTest(v);
+  else renderKikiCert(v);
+}
+
+function kikiHead(it,big){
+  return `<div class="c-top"><div class="c-no">${String(it.no).padStart(2,"0")}</div>
+    <div class="c-title" style="font-size:15px">${it.q}<span class="badge-${it.crime?'crime':'manner'}">${it.crime?'⚠️ 犯罪 / Phạm tội':'マナー / Quy tắc'}</span><div class="viline">${it.qv}</div></div></div>
+    <button class="vibtn kvibtn">${viBtnLabel()}</button>`;
+}
+function kikiOptHTML(it,i){ return `<span class="num">${i+1}.</span><span>${it.opts[i]}<span class="viline">${it.ov[i]}</span></span>`; }
+function kikiReason(it){ return `<div class="bi"><div class="v">${it.rv}</div><div class="j">${it.reason}</div></div>`; }
+
+function kikiLearnCard(it){
+  const ans=state.kiki.learn[it.no];
+  const card=document.createElement("div"); card.className="card"+(state.kiki.ok[it.no]?" done":"")+(state.viMode?" vi-on":"");
+  card.innerHTML=kikiHead(it)+`<div class="kopts"></div><div class="fb"></div>`;
+  const optsBox=card.querySelector(".kopts"); const fb=card.querySelector(".fb");
+  card.querySelector(".kvibtn").onclick=()=>{ state.viMode=!state.viMode; save(); renderKiki(); };
+  function build(){
+    optsBox.innerHTML="";
+    it.opts.forEach((o,i)=>{ const b=document.createElement("button"); b.className="kopt"; b.dataset.i=i; b.innerHTML=kikiOptHTML(it,i); b.onclick=()=>choose(i,b); optsBox.appendChild(b); });
+  }
+  function lock(chosen){
+    optsBox.querySelectorAll(".kopt").forEach(o=>o.disabled=true);
+    const ch=optsBox.querySelector('[data-i="'+chosen+'"]'); if(ch) ch.classList.add(chosen===it.correct?"correct":"wrong");
+    if(chosen!==it.correct){ const cb=optsBox.querySelector('[data-i="'+it.correct+'"]'); if(cb) cb.classList.add("correct"); }
+    showFb(chosen===it.correct);
+  }
+  function choose(i,btn){
+    state.kiki.learn[it.no]=i; if(i===it.correct) state.kiki.ok[it.no]=true; save(); lock(i);
+  }
+  function showFb(right){
+    fb.className="fb "+(right?"right":"miss")+" show";
+    fb.innerHTML=`<div class="hd">${right?'⭕ 正解！ Chính xác!':'✕ 残念！正解は '+(it.correct+1)+'番 / Đáp án đúng: số '+(it.correct+1)}</div>${kikiReason(it)}${right?'':'<button class="btn btn-line btn-full kretry">もう一度 / Thử lại</button>'}`;
+    const rb=fb.querySelector(".kretry"); if(rb) rb.onclick=()=>{ delete state.kiki.learn[it.no]; save(); renderKiki(); };
+  }
+  build();
+  if(ans!==undefined) lock(ans);
+  return card;
+}
+
+function updateKSubmit(){
+  const b=document.getElementById("ksubmit"); if(!b) return;
+  const n=KIKI.filter(it=>state.kiki.testAns[it.no]!==undefined).length;
+  b.textContent=`採点する / Chấm điểm （${n}/24）`; b.disabled=n<24; b.style.opacity=n<24?.5:1;
+}
+function kikiTestCard(it){
+  const card=document.createElement("div"); card.className="card"+(state.viMode?" vi-on":"");
+  card.innerHTML=kikiHead(it)+`<div class="kopts"></div>`;
+  card.querySelector(".kvibtn").onclick=()=>{ state.viMode=!state.viMode; save(); renderKiki(); };
+  const box=card.querySelector(".kopts");
+  it.opts.forEach((o,i)=>{
+    const b=document.createElement("button"); b.className="kopt"+(state.kiki.testAns[it.no]===i?" sel":""); b.dataset.i=i; b.innerHTML=kikiOptHTML(it,i);
+    b.onclick=()=>{ state.kiki.testAns[it.no]=i; save(); box.querySelectorAll(".kopt").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); updateKSubmit(); };
+    box.appendChild(b);
+  });
+  return card;
+}
+function kikiReviewCard(it){
+  const chosen=state.kiki.testAns[it.no];
+  let html=kikiHead(it)+`<div class="kopts">`;
+  it.opts.forEach((o,i)=>{ let cls="kopt"; if(i===it.correct) cls+=" correct"; else if(i===chosen) cls+=" wrong"; html+=`<div class="${cls}">${kikiOptHTML(it,i)}</div>`; });
+  html+=`</div><div class="fb miss show"><div class="hd">正解は ${it.correct+1}番 / Đáp án: số ${it.correct+1}</div>${kikiReason(it)}</div>`;
+  const card=document.createElement("div"); card.className="card"+(state.viMode?" vi-on":""); card.innerHTML=html;
+  card.querySelector(".kvibtn").onclick=()=>{ state.viMode=!state.viMode; save(); renderKiki(); };
+  return card;
+}
+function renderKikiTest(v){
+  const t=state.kiki;
+  if(!t.testDone){
+    const note=document.createElement("div"); note.className="lead";
+    note.innerHTML="全24問に答えて『採点』を押そう（答えはあとで表示）。<div class='leadv'>Trả lời cả 24 câu rồi bấm 「Chấm điểm」 (đáp án hiện sau).</div>";
+    v.appendChild(note);
+    KIKI.forEach(it=>v.appendChild(kikiTestCard(it)));
+    const btn=document.createElement("button"); btn.className="btn btn-dark btn-full"; btn.id="ksubmit"; btn.style.marginTop="6px";
+    v.appendChild(btn); updateKSubmit();
+    btn.onclick=()=>{ let sc=0; KIKI.forEach(it=>{ if(t.testAns[it.no]===it.correct){sc++; state.kiki.ok[it.no]=true;} }); t.testDone=true; t.testScore=sc; save(); renderKiki(); window.scrollTo(0,0); };
+  } else {
+    const s=t.testScore;
+    const res=document.createElement("div"); res.className="result";
+    res.innerHTML=`<div class="r-mk">テスト結果 / Kết quả</div><div class="r-score"><span class="big">${s}</span> / 24 正解</div>
+      <div class="r-pts">${s===24?'🎓 全問正解！「修了証」を発行できます。 Tất cả đúng! Có thể nhận chứng nhận.':'間違えた問題を下で確認しよう。 Hãy xem lại các câu sai bên dưới.'}</div>
+      <button class="btn btn-line btn-full" id="retest">もう一度テスト / Làm lại</button>`;
+    v.appendChild(res);
+    res.querySelector("#retest").onclick=()=>{ state.kiki.testAns={}; state.kiki.testDone=false; save(); renderKiki(); window.scrollTo(0,0); };
+    const wrong=KIKI.filter(it=>t.testAns[it.no]!==it.correct);
+    if(wrong.length){ const h=document.createElement("div"); h.className="section-h"; h.textContent="間違えた問題 / Câu sai ("+wrong.length+")"; v.appendChild(h); wrong.forEach(it=>v.appendChild(kikiReviewCard(it))); }
+  }
+}
+function renderKikiCert(v){
+  const oc=kikiOkCount();
+  if(oc<24){
+    const lock=document.createElement("div"); lock.className="klock";
+    lock.innerHTML=`<div class="mk">🎓 修了証 / Chứng nhận</div>24問すべてに正解すると発行できます。<br>Trả lời đúng cả 24 câu để nhận.<br><br>あと <b>${24-oc}</b> 問 / Còn <b>${24-oc}</b> câu<br><span style="font-size:12px">「📖 学習」か「✅ テスト」で正解しよう</span>`;
+    v.appendChild(lock); return;
+  }
+  const box=document.createElement("div"); box.className="cert";
+  if(!state.kiki.certDate){
+    box.innerHTML=`<div class="seal">🎓</div><div class="ct">名前を入れて発行<br>Nhập tên để nhận chứng nhận</div>
+      <input id="certname" placeholder="名前 / Họ tên" value="${escapeAttr(state.kiki.name||'')}">
+      <button class="btn btn-dark btn-full" id="issue">修了証を発行 / Cấp</button>`;
+    v.appendChild(box);
+    box.querySelector("#issue").onclick=()=>{ const nm=box.querySelector("#certname").value.trim(); if(!nm){box.querySelector("#certname").focus();return;} state.kiki.name=nm; state.kiki.certDate=todayStr(); save(); renderKiki(); };
+  } else {
+    box.innerHTML=`<div class="seal">🎓</div><div class="ct">危機管理24 修了証<br>CHỨNG NHẬN HOÀN THÀNH</div>
+      <div class="cn">${escapeHtml(state.kiki.name)}</div>
+      <div class="cmsg">上記の方は「日本でしてはいけないこと24項目」を全て理解しました。<br>Người trên đã hiểu rõ toàn bộ 24 điều không được làm tại Nhật.<br>発行日 / Ngày cấp：${state.kiki.certDate}<br>ESUHAI ・ 当たり前100アプリ</div>
+      <button class="btn btn-line btn-full" id="recert" style="margin-top:14px">名前を直す / Sửa tên</button>`;
+    v.appendChild(box);
+    box.querySelector("#recert").onclick=()=>{ state.kiki.certDate=null; save(); renderKiki(); };
+  }
+}
+
+/* ============================================================
+   ビュー切替・ルーティング
+   ============================================================ */
 function setView(id,active){
   const el=document.getElementById(id);
   el.style.display=active?"":"none";
-  if(!active) el.innerHTML="";   // 非表示ビューは中身も空に（透けて見える事故を防ぐ）
+  if(!active) el.innerHTML="";   // 非表示ビューは中身も空に
 }
 function render(){
-  renderHeader();
-  setView("view-learn", TAB==="learn");
-  setView("view-do", TAB==="do");
-  setView("view-map", TAB==="map");
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===TAB));
-  if(TAB==="learn") renderLearn();
-  else if(TAB==="do") renderDo();
-  else renderMap();
+  const isA=COURSE==="a100";
+  document.querySelectorAll(".courses button").forEach(b=>b.classList.toggle("on",b.dataset.course===COURSE));
+  document.querySelector(".lv").style.display=isA?"":"none";
+  document.querySelector(".tabs").style.display=isA?"":"none";
+  if(isA){
+    renderHeader();
+    setView("view-learn", TAB==="learn"); setView("view-do", TAB==="do"); setView("view-map", TAB==="map");
+    setView("view-kiki", false);
+    document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===TAB));
+    if(TAB==="learn") renderLearn(); else if(TAB==="do") renderDo(); else renderMap();
+  } else {
+    setView("view-learn", false); setView("view-do", false); setView("view-map", false);
+    setView("view-kiki", true);
+    renderKiki();
+  }
 }
+document.querySelectorAll(".courses button").forEach(b=>b.onclick=()=>{COURSE=b.dataset.course; render(); window.scrollTo(0,0);});
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{TAB=b.dataset.tab;render();window.scrollTo(0,0);});
 
 let toastT;
