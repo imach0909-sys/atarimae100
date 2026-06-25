@@ -260,7 +260,7 @@
   <footer>
     記録は端末内にだけ保存されます（誰にも送信されません）。<br>
     Dữ liệu chỉ lưu trên thiết bị của bạn (không gửi đi đâu).<br>
-    プロトタイプ v1.7 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
+    プロトタイプ v1.8 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
     <button class="reset" onclick="resetAll()">データを消す</button>
   </footer>
 </div>
@@ -847,7 +847,7 @@ const disp=(it)=>CONTENT[it.no]?CONTENT[it.no].short:(it.title.length>26?it.titl
 function charFrame(level,size,locked){
   const li=Math.min(Math.max(level,1),8);
   return `<span class="charframe lvc${li}${locked?' clk':''}" style="width:${size}px;height:${size}px">`
-    +`<img src="char/lv${li}.png" alt="" onerror="this.remove()">`
+    +`<img src="char/lv${li}.png?v=2" alt="" onerror="this.remove()">`
     +`<span class="charnum" style="font-size:${Math.round(size*0.42)}px">${li}</span></span>`;
 }
 function renderHeader(){
@@ -1140,7 +1140,7 @@ function renderMap(){
     const locked=lv>curLv, now=(lv===Math.min(curLv,8));
     const li=lv-1;
     dex.innerHTML+=`<div class="cell ${locked?'lock':''} ${now?'now':''}">
-      <div class="dexfig lvc${lv}${locked?' clk':''}${now?' now':''}"><span class="dexnum">${lv}</span><img src="char/lv${lv}.png" alt="" onerror="this.remove()"></div>
+      <div class="dexfig lvc${lv}${locked?' clk':''}${now?' now':''}"><span class="dexnum">${lv}</span><img src="char/lv${lv}.png?v=2" alt="" onerror="this.remove()"></div>
       <div class="cn">${now?'▶ ':''}${LV_TITLES[li]}</div>
       <div class="cv">${locked?'🔒':LV_TITLES_VI[li]}</div></div>`;
   }
