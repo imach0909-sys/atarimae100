@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2b2b2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="当たり前100">
+<title>当たり前100 ｜ ESUHAI</title>
+<style>
+  :root{
+    --ink:#2b2b2e; --ink-soft:#6b6b70; --paper:#f6f3ec; --card:#fffdf8;
+    --line:#e3ddd0; --accent:#9a6a3a; --accent-soft:#f0e6d6;
+    --ok:#3f7d54; --part:#b8893b; --ng:#b15545;
+    --shadow:0 1px 3px rgba(43,43,46,.08),0 6px 18px rgba(43,43,46,.06);
+    --mincho:"Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
+    --gothic:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{font-family:var(--gothic);color:var(--ink);background:var(--paper);line-height:1.7;font-size:16px;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px 110px}
+
+  /* ヘッダー */
+  header{max-width:560px;margin:0 auto;padding:18px 16px 12px}
+  .brand{font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700}
+  h1{font-family:var(--mincho);font-weight:600;font-size:23px;margin:2px 0 0;letter-spacing:.02em}
+  /* レベル＆ポイント */
+  .lv{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
+  .lv .badge{width:46px;height:46px;border-radius:12px;background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+  .lv .badge .l{font-size:9px;letter-spacing:.1em;opacity:.8;line-height:1}
+  .lv .badge .n{font-family:var(--mincho);font-size:20px;font-weight:600;line-height:1.1}
+  .lv .mid{flex:1;min-width:0}
+  .lv .title{font-size:13px;font-weight:700}
+  .lv .bar{height:7px;background:var(--accent-soft);border-radius:4px;margin-top:6px;overflow:hidden}
+  .lv .bar i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:.4s}
+  .lv .pts{font-size:11px;color:var(--ink-soft);margin-top:4px}
+  .lv .streak{text-align:center;flex-shrink:0}
+  .lv .streak .n{font-family:var(--mincho);font-size:20px;font-weight:600;line-height:1}
+  .lv .streak .l{font-size:10px;color:var(--ink-soft)}
+
+  /* タブ */
+  .tabs{position:sticky;top:0;z-index:20;background:var(--paper);max-width:560px;margin:0 auto;padding:10px 16px 8px;display:flex;gap:8px}
+  .tabs button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 4px;font-size:13px;font-weight:700;font-family:inherit;color:var(--ink-soft);cursor:pointer}
+  .tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .section-h{font-family:var(--mincho);font-size:15px;margin:18px 4px 10px;display:flex;align-items:center;gap:8px}
+  .section-h .count{font-family:var(--gothic);font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:auto}
+  .cat-band{background:var(--accent-soft);border-radius:12px;padding:11px 14px;margin-bottom:14px}
+  .cat-band .cn{font-family:var(--mincho);font-weight:600;font-size:16px;color:#6f4f2c}
+  .cat-band .cd{font-size:12px;color:#806040;margin-top:2px}
+  .cat-band .pg{height:6px;background:#e6d3b8;border-radius:3px;margin-top:8px;overflow:hidden}
+  .cat-band .pg i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:.4s}
+
+  /* カード */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px;margin-bottom:11px;box-shadow:var(--shadow);transition:.18s}
+  .card.done{opacity:.62}
+  .c-top{display:flex;align-items:flex-start;gap:10px}
+  .c-no{font-family:var(--mincho);font-size:12px;color:var(--accent);min-width:26px;padding-top:3px}
+  .c-title{font-size:16px;font-weight:700;line-height:1.45;flex:1}
+  .c-tag{font-size:11px;font-weight:700;white-space:nowrap;padding-top:3px}
+  .c-tag.ok{color:var(--ok)} .c-tag.warn{color:var(--part)}
+
+  .btn{display:inline-block;border:none;border-radius:11px;padding:10px 14px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:.12s}
+  .btn:active{transform:scale(.98)}
+  .btn-line{background:var(--card);border:1px solid var(--accent);color:var(--accent)}
+  .btn-dark{background:var(--ink);color:#fff}
+  .btn-full{width:100%;margin-top:12px}
+
+  /* クイズ */
+  .quiz{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .quiz.open{display:block}
+  .quiz .q{font-size:14.5px;font-weight:700;margin-bottom:10px}
+  .opt{width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:11px;padding:11px 13px;font-size:14px;font-family:inherit;margin-bottom:8px;cursor:pointer;transition:.12s;line-height:1.5}
+  .opt:active{transform:scale(.99)}
+  .opt.correct{background:#eef4ef;border-color:var(--ok);color:#235038;font-weight:700}
+  .opt.wrong{background:#f7ece9;border-color:var(--ng);color:#7d3528}
+  .fb{display:none;margin-top:6px;border-radius:12px;padding:12px 13px;font-size:13.5px;line-height:1.6}
+  .fb.show{display:block}
+  .fb.right{background:#eef4ef;border:1px solid #d4e4d8}
+  .fb.miss{background:#fbf3e7;border:1px solid #ecdcc0}
+  .fb .hd{font-weight:700;margin-bottom:6px}
+  .fb .pt{color:var(--accent);font-weight:700}
+  .fb .why{margin:8px 0 0}
+  .exrow{display:flex;gap:8px;margin-top:9px}
+  .exrow .b{flex:1;border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.5}
+  .exrow .e-ok{background:#fff;border:1px solid #d4e4d8}
+  .exrow .e-ng{background:#fff;border:1px solid #ecd5cf}
+  .exrow .t{font-size:10.5px;font-weight:700;display:block;margin-bottom:2px}
+  .exrow .e-ok .t{color:var(--ok)} .exrow .e-ng .t{color:var(--ng)}
+
+  /* 二言語表示：ベトナム語＝上（主）、日本語＝下（参照） */
+  .bi .v, .reason .v, .exrow .v{color:var(--ink);line-height:1.55}
+  .bi .v{font-size:14px}
+  .bi .j, .reason .j, .exrow .j{color:var(--ink-soft);line-height:1.5;margin-top:3px;padding-top:3px;border-top:1px dotted var(--line)}
+  .bi .j{font-size:12.5px}
+  .exrow .v{font-size:12.5px} .exrow .j{font-size:11.5px}
+  .reason .v{font-size:13px} .reason .j{font-size:12px}
+
+  /* 監修待ち */
+  .pending{font-size:13px;color:var(--ink-soft);background:#f3eee3;border:1px dashed var(--line);border-radius:11px;padding:11px 13px;margin-top:10px}
+  .pending b{color:var(--accent)}
+  .reason{font-size:12px;color:var(--ink-soft);margin-top:9px;padding-left:10px;border-left:2px solid var(--accent-soft)}
+
+  /* 実践 改善ループ */
+  .eval{display:flex;gap:8px;margin-top:13px}
+  .eval button{flex:1;border:1px solid var(--line);background:var(--card);border-radius:11px;padding:10px 4px;font-size:13px;font-weight:700;font-family:inherit;color:var(--ink);cursor:pointer;transition:.12s}
+  .eval button:active{transform:scale(.97)}
+  .eval .b-ok.sel{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .eval .b-part.sel{background:var(--part);color:#fff;border-color:var(--part)}
+  .eval .b-ng.sel{background:var(--ng);color:#fff;border-color:var(--ng)}
+  .remind{background:var(--accent-soft);border-radius:10px;padding:9px 11px;margin-top:10px;font-size:13px;color:#6f4f2c}
+  .loop{display:none;margin-top:11px;background:#fbf6ee;border:1px solid var(--line);border-radius:12px;padding:12px}
+  .loop.open{display:block}
+  .loop p{margin:0 0 8px;font-size:13px;font-weight:700}
+  .loop label{font-size:12px;color:var(--ink-soft);display:block;margin-bottom:3px}
+  .loop input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:14px;font-family:inherit;background:#fff;margin-bottom:10px}
+  .loop input:focus{outline:none;border-color:var(--accent)}
+  .loop .save{width:100%;background:var(--ink);color:#fff;border:none;border-radius:10px;padding:11px;font-weight:700;font-size:14px;font-family:inherit;cursor:pointer}
+  .loop .hint{font-size:11px;color:var(--ng);margin:-4px 0 8px;display:none}
+  .loop .hint.show{display:block}
+
+  /* 進捗（地図） */
+  .mapcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
+  .mapcard.locked{opacity:.55;box-shadow:none;background:transparent}
+  .mapcard .ico{width:34px;height:34px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--mincho);font-weight:600;flex-shrink:0}
+  .mapcard.cleared .ico{background:var(--ok);color:#fff}
+  .mapcard .m-mid{flex:1;min-width:0}
+  .mapcard .m-name{font-size:14.5px;font-weight:700}
+  .mapcard .m-sub{font-size:11.5px;color:var(--ink-soft)}
+  .mapcard .pg{height:5px;background:var(--accent-soft);border-radius:3px;margin-top:6px;overflow:hidden}
+  .mapcard .pg i{display:block;height:100%;background:var(--accent);border-radius:3px}
+
+  .lead{font-size:13px;color:var(--ink-soft);margin:2px 4px 14px;line-height:1.6}
+  .empty{text-align:center;color:var(--ink-soft);padding:30px 16px;font-size:14px}
+  .empty .mk{font-family:var(--mincho);font-size:18px;color:var(--accent);margin-bottom:6px}
+
+  /* 完了サマリー */
+  .result{background:var(--card);border:1.5px solid var(--accent);border-radius:18px;padding:20px 18px;margin-bottom:16px;box-shadow:var(--shadow);text-align:center}
+  .result .r-mk{font-family:var(--mincho);font-size:19px;color:var(--accent);font-weight:600}
+  .result .r-score{font-size:14px;margin-top:10px;color:var(--ink)}
+  .result .r-score .big{font-family:var(--mincho);font-size:34px;font-weight:600;color:var(--ink);vertical-align:-2px}
+  .result .r-pts{font-size:12px;color:var(--ink-soft);margin-top:6px}
+  .result .r-tally{display:flex;gap:8px;margin-top:12px}
+  .result .r-tally .t{flex:1;background:var(--accent-soft);border-radius:10px;padding:8px 4px}
+  .result .r-tally .t .n{font-family:var(--mincho);font-size:20px;font-weight:600;line-height:1}
+  .result .r-tally .t .l{font-size:10.5px;color:var(--ink-soft);margin-top:3px}
+  .result .r-allclear{font-family:var(--mincho);font-size:16px;color:var(--ok);margin-top:14px}
+
+  footer{text-align:center;font-size:11px;color:var(--ink-soft);padding:18px 16px 26px;max-width:560px;margin:0 auto}
+  .reset{background:none;border:none;color:var(--ink-soft);font-size:11px;text-decoration:underline;cursor:pointer;font-family:inherit}
+
+  /* トースト */
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:30px;font-size:14px;font-weight:700;opacity:0;transition:.3s;z-index:50;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">ESUHAI ｜ 日本で働く当たり前100</div>
+  <h1>当たり前100</h1>
+  <div class="lv">
+    <div class="badge"><span class="l">LV</span><span class="n" id="lv-n">1</span></div>
+    <div class="mid">
+      <div class="title" id="lv-title">新人</div>
+      <div class="bar"><i id="lv-bar" style="width:0%"></i></div>
+      <div class="pts" id="lv-pts">0 pt</div>
+    </div>
+    <div class="streak"><div class="n" id="lv-streak">0</div><div class="l">連続日数</div></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button data-tab="learn" class="on">📚 まなぶ</button>
+  <button data-tab="do">✅ やってみる</button>
+  <button data-tab="map">🗺️ 進捗</button>
+</div>
+
+<div class="wrap">
+  <div id="view-learn"></div>
+  <div id="view-do" style="display:none"></div>
+  <div id="view-map" style="display:none"></div>
+
+  <footer>
+    記録は端末内にだけ保存されます（誰にも送信されません）。<br>
+    プロトタイプ v1.0 ・ 全100項目 ／ ふりがな＋解説ベトナム語併記（要・山岡さん監修）<br>
+    <button class="reset" onclick="resetAll()">データを消す</button>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   カテゴリ定義（実データ：10大分類 × 10項目）
+   ============================================================ */
+const CATS=[
+ {name:"基本品質",        desc:"信頼を築く土台（挨拶・5S・時間）", lv:"Lv.1-2"},
+ {name:"時間と納期",      desc:"プロの約束を守る",               lv:"Lv.2-3"},
+ {name:"情報のQC",        desc:"ミスを防ぐ報連相・伝達",         lv:"Lv.1-3"},
+ {name:"自責と完結",      desc:"自分の仕事に責任を持つ",         lv:"Lv.3-4"},
+ {name:"問題解決とKAIZEN",desc:"仕組みを改良する",               lv:"Lv.4-"},
+ {name:"5Sとセキュリティ",desc:"環境と情報を守る",               lv:"Lv.1-3"},
+ {name:"チームワーク",    desc:"内なる顧客を大切に",             lv:"Lv.5-6"},
+ {name:"顧客満足（CS）",  desc:"価値を提供する",                 lv:"Lv.4-7"},
+ {name:"自己研鑽",        desc:"力量を開発し続ける",             lv:"Lv.4-7"},
+ {name:"プロの覚悟",      desc:"経営品質に寄与する",             lv:"Lv.6-7"},
+];
+
+/* ============================================================
+   ベースデータ（全100項目：実データ）
+   ============================================================ */
+const BASE=[
+ {no:1,cat:0,title:"挨拶を自分から相手の目を見て明るく行う",reason:""},
+ {no:2,cat:0,title:"返事は『はい』とはっきり即座に行う",reason:""},
+ {no:3,cat:0,title:"5分前行動を徹底する",reason:""},
+ {no:4,cat:0,title:"始業時に100%稼働できる状態でいる",reason:""},
+ {no:5,cat:0,title:"清潔感ある身だしなみを保つ（清潔・衛生・ハンカチ・歯磨き・髪の毛）男性：バックルの大きいベルトをしない",reason:""},
+ {no:6,cat:0,title:"感謝 と",reason:""},
+ {no:7,cat:0,title:"嘘をつかずミスを隠さない 小さな約束を守れる",reason:""},
+ {no:8,cat:0,title:"公私の区別を守る 物を大事に扱う経費を考えられる",reason:""},
+ {no:9,cat:0,title:"職場の5Sを仕事の一部として行う",reason:""},
+ {no:10,cat:0,title:"体調管理を責任を持って行う",reason:""},
+ {no:11,cat:1,title:"すべての仕事に期限を設定する",reason:""},
+ {no:12,cat:1,title:"納期を必達と捉える",reason:""},
+ {no:13,cat:1,title:"遅れそうな時は即事前報告と対策を行う",reason:""},
+ {no:14,cat:1,title:"スケジュールを可視化する",reason:""},
+ {no:15,cat:1,title:"会議目的を事前確認する",reason:""},
+ {no:16,cat:1,title:"会議終了時間を守る",reason:""},
+ {no:17,cat:1,title:"仕事に優先順位をつける",reason:""},
+ {no:18,cat:1,title:"即レスを誠実さの指標にする",reason:""},
+ {no:19,cat:1,title:"隙間時間を活用する",reason:""},
+ {no:20,cat:1,title:"無用な残業をしない",reason:""},
+ {no:21,cat:2,title:"報連相を自分から行う",reason:""},
+ {no:22,cat:2,title:"結論から話す",reason:""},
+ {no:23,cat:2,title:"事実と意見を分けて話す",reason:""},
+ {no:24,cat:2,title:"指示を復唱確認する",reason:""},
+ {no:25,cat:2,title:"必ずメモを取る",reason:""},
+ {no:26,cat:2,title:"分からないことはすぐ質問する",reason:""},
+ {no:27,cat:2,title:"バッドニュースを先に伝える",reason:""},
+ {no:28,cat:2,title:"相談時は案を持つ",reason:""},
+ {no:29,cat:2,title:"相手の話を最後まで聞く",reason:""},
+ {no:30,cat:2,title:"chat・メール件名を具体的に書く",reason:""},
+ {no:31,cat:3,title:"まず自分に非がなかったか考える",reason:""},
+ {no:32,cat:3,title:"言い訳をしない",reason:""},
+ {no:33,cat:3,title:"最後まで自分で完結させる",reason:""},
+ {no:34,cat:3,title:"できていないことを認め改善思考を持つ",reason:""},
+ {no:35,cat:3,title:"失敗を学びに変える",reason:""},
+ {no:36,cat:3,title:"相手の意図を汲み取る",reason:""},
+ {no:37,cat:3,title:"作業ではなく成果で考える",reason:""},
+ {no:38,cat:3,title:"感情を職場に持ち込まない",reason:""},
+ {no:39,cat:3,title:"キャパを把握し早めに相談する",reason:""},
+ {no:40,cat:3,title:"自責が成長の原動力だと信じる",reason:""},
+ {no:41,cat:4,title:"仕組みで問題を捉える",reason:""},
+ {no:42,cat:4,title:"なぜを5回考える",reason:""},
+ {no:43,cat:4,title:"標準を守り改善提案する",reason:""},
+ {no:44,cat:4,title:"ヒヤリハットを報告する",reason:""},
+ {no:45,cat:4,title:"成功を標準化し共有する",reason:""},
+ {no:46,cat:4,title:"業務効率化を考える",reason:""},
+ {no:47,cat:4,title:"AI等を活用する",reason:""},
+ {no:48,cat:4,title:"変化に即応する",reason:""},
+ {no:49,cat:4,title:"ミスが起きない仕組み・再発防止策を考える",reason:""},
+ {no:50,cat:4,title:"日々改善する",reason:""},
+ {no:51,cat:5,title:"デスクを整理し即取り出せる",reason:""},
+ {no:52,cat:5,title:"PC内を整理する",reason:""},
+ {no:53,cat:5,title:"共有スペースを綺麗に使う",reason:""},
+ {no:54,cat:5,title:"画面ロックを徹底する",reason:""},
+ {no:55,cat:5,title:"パスワード管理を徹底する",reason:""},
+ {no:56,cat:5,title:"機密情報を外部で話さない",reason:""},
+ {no:57,cat:5,title:"データをバックアップする",reason:""},
+ {no:58,cat:5,title:"備品を適切に扱う",reason:""},
+ {no:59,cat:5,title:"機密書類を確実に廃棄する",reason:""},
+ {no:60,cat:5,title:"SNSの取り扱いに注意する",reason:""},
+ {no:61,cat:6,title:"仲間を内なる顧客として扱う",reason:""},
+ {no:62,cat:6,title:"後工程を意識する",reason:""},
+ {no:63,cat:6,title:"後輩を育てる",reason:""},
+ {no:64,cat:6,title:"仲間の成功を称賛する",reason:""},
+ {no:65,cat:6,title:"悪口を言わない",reason:""},
+ {no:66,cat:6,title:"困っている仲間に声をかける",reason:""},
+ {no:67,cat:6,title:"ノウハウを共有する",reason:""},
+ {no:68,cat:6,title:"多様性を尊重する",reason:""},
+ {no:69,cat:6,title:"感謝を伝える",reason:""},
+ {no:70,cat:6,title:"チーム目標を自分事にする",reason:""},
+ {no:71,cat:7,title:"顧客情報を正確に覚える",reason:""},
+ {no:72,cat:7,title:"顧客の困りごとを先読みする",reason:""},
+ {no:73,cat:7,title:"付加価値を添える",reason:""},
+ {no:74,cat:7,title:"自信と謙虚さを併せ持つ",reason:""},
+ {no:75,cat:7,title:"業界理解を深める",reason:""},
+ {no:76,cat:7,title:"期待を超える",reason:""},
+ {no:77,cat:7,title:"クレームに誠実迅速に対応する",reason:""},
+ {no:78,cat:7,title:"会社の代表として振る舞う",reason:""},
+ {no:79,cat:7,title:"顧客成功を最優先に考える",reason:""},
+ {no:80,cat:7,title:"長期的関係を築く",reason:""},
+ {no:81,cat:8,title:"専門知識を学び続ける",reason:""},
+ {no:82,cat:8,title:"批判を成長材料にする",reason:""},
+ {no:83,cat:8,title:"強み弱みを把握する",reason:""},
+ {no:84,cat:8,title:"PDCAを回す",reason:""},
+ {no:85,cat:8,title:"言語能力を磨く",reason:""},
+ {no:86,cat:8,title:"社会情勢へ関心を持つ",reason:""},
+ {no:87,cat:8,title:"ロールモデルを持つ",reason:""},
+ {no:88,cat:8,title:"キャリアを自ら設計する",reason:""},
+ {no:89,cat:8,title:"新技術に触れる",reason:""},
+ {no:90,cat:8,title:"学びを止めない",reason:""},
+ {no:91,cat:9,title:"給料の源泉を理解する",reason:""},
+ {no:92,cat:9,title:"時間あたり生産性を意識する",reason:""},
+ {no:93,cat:9,title:"会社ビジョンと行動を結びつける",reason:""},
+ {no:94,cat:9,title:"困難を面白がる",reason:""},
+ {no:95,cat:9,title:"倫理的に行動する",reason:""},
+ {no:96,cat:9,title:"会社全体視点で考える",reason:""},
+ {no:97,cat:9,title:"条件思考で挑む",reason:""},
+ {no:98,cat:9,title:"職場に前向きな影響を与える",reason:""},
+ {no:99,cat:9,title:"社会貢献意識を持つ",reason:""},
+ {no:100,cat:9,title:"世界を幸せにする情熱を持つ",reason:""}
+];
+
+/* ============================================================
+   解説＋クイズ（基本品質1-10をフル実装。残りは(b)監修で順次）
+   各：short表示名 / why / ok / ng / q問題 / opts[2] / correct / explain
+   ============================================================ */
+const CONTENT={
+ 1:{short:"自分（じぶん）から明（あか）るく挨拶（あいさつ）する",
+    why:"挨拶は『あなたを認めています』という合図。日本では声の大きさと表情で第一印象が決まります。自分から挨拶できる人は、それだけで信頼されます。",
+    ok:"相手の目を見て、自分から先に「おはようございます！」と明るく言う。",
+    ng:"相手に言われてから小さい声で返す／下を向いて通り過ぎる。",
+    q:"朝（あさ）、廊下（ろうか）で先生（せんせい）とすれ違（ちが）いました。正（ただ）しいのは？",
+    opts:["自分（じぶん）から「おはようございます」と明（あか）るく言（い）う","先生（せんせい）が声（こえ）をかけてくれるのを待（ま）つ"],correct:0,
+    explain:"挨拶は『自分から』が基本。待つ人より、自分から動く人が信頼されます。"},
+ 2:{short:"返事（へんじ）は「はい」とはっきり",
+    why:"はっきりした返事は『聞こえています・引き受けます』のサイン。返事がないと、日本人は不安になり信頼できません。",
+    ok:"名前を呼ばれたらすぐ「はい」と声に出し、相手の方を向く。",
+    ng:"黙ってうなずくだけ／聞こえないふりをする。",
+    q:"作業（さぎょう）中（ちゅう）に名前（なまえ）を呼（よ）ばれました。正（ただ）しいのは？",
+    opts:["手（て）を止（と）めて「はい」とすぐ返事（へんじ）する","作業（さぎょう）を続（つづ）けながら無言（むごん）でうなずく"],correct:0,
+    explain:"まず「はい」と声に出す。返事は相手を安心させ、ミスも防ぎます。"},
+ 3:{short:"5分（ふん）前（まえ）行動（こうどう）を徹底（てってい）する",
+    why:"日本では『時間ちょうど＝遅刻』の感覚。5分前に着いて準備を終えていることが、プロの基本です。",
+    ok:"始業・約束の5〜10分前に着き、すぐ動ける状態で待つ。",
+    ng:"時間ちょうどに着く／着いてから準備を始める。",
+    q:"9時（じ）始業（しぎょう）です。理想（りそう）の動（うご）きは？",
+    opts:["8時（じ）55分（ふん）には準備（じゅんび）を終（お）えている","9時（じ）ちょうどに到着（とうちゃく）する"],correct:0,
+    explain:"ちょうど着では遅い。5分前に『準備が終わっている』状態を目指します。"},
+ 4:{short:"始業（しぎょう）時（じ）に100%動（うご）ける状態（じょうたい）",
+    why:"始業時間は『仕事を始める時間』。そこから着替えや食事を始めるのは日本ではNG。始業＝すぐ動ける状態にしておきます。",
+    ok:"始業前に着替え・朝食・準備を済ませ、始業と同時に仕事を始める。",
+    ng:"始業後にデスクで朝ごはんを食べ始める／着替えを始める。",
+    q:"始業（しぎょう）のチャイムが鳴（な）りました。正（ただ）しいのは？",
+    opts:["準備（じゅんび）は済（す）んでいて、すぐ仕事（しごと）を始（はじ）める","これから朝（あさ）ごはんを食（た）べてから始（はじ）める"],correct:0,
+    explain:"始業はスタートの合図。食事や準備は始業前に終えておきます。"},
+ 5:{short:"清潔（せいけつ）感（かん）ある身（み）だしなみ",
+    why:"清潔感は『仕事も丁寧そう』という信頼に直結します。おもてなしの心にも通じます。",
+    ok:"清潔な服、整えた髪、短い爪、歯磨き、ハンカチ。派手すぎない格好。",
+    ng:"寝ぐせ／汚れた服／強い香り／大きなアクセサリー。",
+    q:"出勤（しゅっきん）・面接（めんせつ）の身（み）だしなみで良（よ）いのは？",
+    opts:["清潔（せいけつ）な服（ふく）・整（ととの）えた髪（かみ）・短（みじか）い爪（つめ）","おしゃれ優先（ゆうせん）で派手（はで）なアクセサリー"],correct:0,
+    explain:"職場の身だしなみは『おしゃれ』より『清潔感』が大切です。"},
+ 6:{short:"感謝（かんしゃ）と謝罪（しゃざい）を言葉（ことば）にする",
+    why:"心で思うだけでなく口に出す。感謝と素直な謝罪ができる人は、長く一緒に働く仲間から信頼されます。",
+    ok:"手伝ってもらったら「ありがとうございます」、ミスしたら言い訳より先に「すみません」。",
+    ng:"心で思うだけ／照れて言わない／謝らず言い訳から始める。",
+    q:"自分（じぶん）のミスで先輩（せんぱい）に迷惑（めいわく）をかけました。最初（さいしょ）に言（い）うべきは？",
+    opts:["「すみません、すぐ直（なお）します」","「でも、理由（りゆう）があって…」と説明（せつめい）から始（はじ）める"],correct:0,
+    explain:"日本ではまず素直に謝る。言い訳が先だと信頼を失います。"},
+ 7:{short:"嘘（うそ）をつかずミスを隠（かく）さない",
+    why:"小さな嘘は次の嘘を呼びます。正直にミスを報告できる人ほど、結局は信頼されます。",
+    ok:"ミスに気づいたらすぐ正直に報告する。小さな約束も守る。",
+    ng:"バレないように隠す／ごまかす／できないのに「できます」と言う。",
+    q:"自分（じぶん）のミスに、まだ誰（だれ）も気（き）づいていません。どうする？",
+    opts:["自分（じぶん）から正直（しょうじき）に報告（ほうこく）する","バレなさそうだから黙（だま）っておく"],correct:0,
+    explain:"隠したミスは後で大きくなります。正直さが信頼を守ります。"},
+ 8:{short:"公私（こうし）を区別（くべつ）し物（もの）を大切（たいせつ）に",
+    why:"会社の備品・経費はみんなのもの。丁寧に扱える人は、仕事も丁寧だと見られます。",
+    ok:"会社の道具・PC・経費を自分の物のように大切に使う。私用と分ける。",
+    ng:"会社の物を雑に扱う／私用に使う／経費を考えず無駄遣いする。",
+    q:"会社（かいしゃ）の備品（びひん）の使（つか）い方（かた）で正（ただ）しいのは？",
+    opts:["自分（じぶん）の物（もの）以上（いじょう）に丁寧（ていねい）に扱（あつか）う","会社（かいしゃ）の物（もの）だから少（すこ）し雑（ざつ）でもいい"],correct:0,
+    explain:"公の物を大切にできる人が信頼されます。"},
+ 9:{short:"5Sを仕事（しごと）の一部（いちぶ）として行（おこな）う",
+    why:"5S（整理・整頓・清掃・清潔・しつけ）は仕事の効率と品質を上げる『仕事そのもの』。掃除は雑用ではありません。",
+    ok:"使った物は定位置に戻し、自分の周りを常にきれいに保つ。",
+    ng:"5Sを『余計な雑用』と考える／散らかったまま放置する。",
+    q:"5Sについて正（ただ）しい考（かんが）えは？",
+    opts:["効率（こうりつ）と品質（ひんしつ）を上（あ）げる『仕事（しごと）の一部（いちぶ）』","時間（じかん）があるときだけやる雑用（ざつよう）"],correct:0,
+    explain:"5Sは仕事の土台。整った職場はミスもケガも減ります。"},
+ 10:{short:"体調（たいちょう）管理（かんり）を責任（せきにん）を持（も）って",
+    why:"体調管理も仕事のうち。急に休むと周りに迷惑がかかります。自分の体を守るのもプロの責任です。",
+    ok:"睡眠・食事を整え、雨に濡れない等の予防をする。不調は早めに相談する。",
+    ng:"夜ふかしを続けて体調を崩す／我慢して急に欠勤する。",
+    q:"体調（たいちょう）管理（かんり）について正（ただ）しいのは？",
+    opts:["自己（じこ）管理（かんり）も仕事（しごと）。予防（よぼう）し、不調（ふちょう）は早（はや）めに伝（つた）える","体調（たいちょう）は仕方（しかた）ない、崩（くず）れたら休（やす）めばいい"],correct:0,
+    explain:"体調管理は責任。急な欠勤は周りの仕事に影響します。"},
+
+ /* ===== 2. 時間と納期 ===== */
+ 11:{short:"すべての仕事（しごと）に期限（きげん）を決（き）める",why:"期限のない仕事は後回しになり、流れ作業の次の人を止めます。自分で「いつまでに」を決める人が信頼されます。",ok:"仕事を受けたら「いつまでに終わらせるか」を自分で決めて共有する。",ng:"「時間があるときにやる」と期限を決めない。",q:"新（あたら）しい仕事（しごと）を頼（たの）まれました。まずすべきは？",opts:["「いつまでに」期限（きげん）を決（き）めて共有（きょうゆう）する","とりあえず手（て）が空（あ）いたら始（はじ）める"],correct:0,explain:"期限を決めると優先順位がつき、次の工程の人も安心します。"},
+ 12:{short:"納期（のうき）を必達（ひったつ）と捉（とら）える",why:"納期は相手との約束。守れないと信頼を失い、次の仕事に影響します。「だいたい」ではなく必ず守るもの。",ok:"約束した納期は必ず守る。難しいなら早めに相談して調整する。",ng:"「少しくらい遅れても大丈夫」と考える。",q:"納期（のうき）に対（たい）する正（ただ）しい考（かんが）えは？",opts:["相手（あいて）との約束（やくそく）。必（かなら）ず守（まも）るもの","目安（めやす）なので多少（たしょう）遅（おく）れてもよい"],correct:0,explain:"納期＝約束。守る前提で、無理なら事前に相談します。"},
+ 13:{short:"遅（おく）れそうなら即（そく）報告（ほうこく）・対策（たいさく）",why:"遅れること自体より「黙って遅れる」方が問題。早く伝えれば相手も手を打てます。",ok:"遅れそうと分かった瞬間に報告し、対策案も一緒に伝える。",ng:"ギリギリまで黙って、当日に「できませんでした」。",q:"納期（のうき）に間（ま）に合（あ）わなそう。正（ただ）しいのは？",opts:["分（わ）かった時点（じてん）ですぐ報告（ほうこく）し対策（たいさく）を相談（そうだん）","間（ま）に合（あ）うよう祈（いの）って黙（だま）って続（つづ）ける"],correct:0,explain:"早い報告が一番の対策。遅れの連絡は早いほど挽回できます。"},
+ 14:{short:"スケジュールを可視（かし）化（か）する",why:"頭の中だけの予定は忘れ・ズレのもと。書いて見える化すると、相手とも認識を合わせやすい。",ok:"やること・締切をカレンダーやリストに書き出して共有する。",ng:"予定を頭の中だけで管理する。",q:"予定（よてい）の管理（かんり）で良（よ）いのは？",opts:["書（か）き出（だ）して見（み）える形（かたち）にする","頭（あたま）の中（なか）で覚（おぼ）えておく"],correct:0,explain:"可視化すると抜け漏れが減り、相手とも共有できます。"},
+ 15:{short:"会議（かいぎ）目的（もくてき）を事前（じぜん）確認（かくにん）する",why:"目的を知らずに参加すると時間が無駄に。事前に「何のための会議か」を確認すると、準備でき有意義になる。",ok:"会議前に目的・議題・自分の役割を確認しておく。",ng:"何の会議か分からないまま、準備せず参加する。",q:"会議（かいぎ）に呼（よ）ばれました。良（よ）い準備（じゅんび）は？",opts:["目的（もくてき）と議題（ぎだい）を事前（じぜん）に確認（かくにん）しておく","当日（とうじつ）その場（ば）で内容（ないよう）を把握（はあく）する"],correct:0,explain:"目的が分かれば準備でき、会議が短く濃くなります。"},
+ 16:{short:"会議（かいぎ）終了（しゅうりょう）時間（じかん）を守（まも）る",why:"終了時間を守ると、内容を時間内に収めようと集中します。だらだら延長は全員の時間を奪う。",ok:"終了時間を意識し、時間内に結論を出す。",ng:"時間を気にせずだらだら延長する。",q:"会議（かいぎ）の進（すす）め方（かた）で良（よ）いのは？",opts:["終了（しゅうりょう）時間（じかん）を意識（いしき）して時間（じかん）内（ない）に終（お）える","話（はなし）が続（つづ）く限（かぎ）り延長（えんちょう）する"],correct:0,explain:"終了時間の意識が、議論の密度を上げます。"},
+ 17:{short:"仕事（しごと）に優先（ゆうせん）順位（じゅんい）をつける",why:"全部を同時にはできない。重要・急ぎを見極めて順番をつける人が、限られた時間で成果を出します。",ok:"重要度と締切で順番を決め、大事なものから手をつける。",ng:"目についたもの・楽なものから手をつける。",q:"やることが多（おお）いとき、正（ただ）しいのは？",opts:["重要（じゅうよう）度（ど）と締切（しめきり）で順番（じゅんばん）をつける","やりやすいものから片（かた）づける"],correct:0,explain:"優先順位をつけると、本当に大事な仕事が遅れません。"},
+ 18:{short:"即（そく）レスを誠実（せいじつ）さの指標（しひょう）に",why:"返事が早いとお互い仕事が進みます。状況を知らせること自体が相手への思いやり。",ok:"連絡には早く反応する。すぐ答えられなくても「確認します」と一報入れる。",ng:"返事を後回しにして相手を待たせる。",q:"すぐ答（こた）えられない連絡（れんらく）が来（き）た。良（よ）いのは？",opts:["「確認（かくにん）して後（あと）で連絡（れんらく）します」とまず一報（いっぽう）","答（こた）えが出（で）るまで返信（へんしん）しない"],correct:0,explain:"早い一報が信頼を生む。沈黙は相手を不安にします。"},
+ 19:{short:"隙間（すきま）時間（じかん）を活用（かつよう）する",why:"待ち時間や移動などの短い時間も積もれば大きい。準備や復習に使える人が伸びます。",ok:"空いた数分で次の準備・メモ整理・学習をする。",ng:"隙間時間をなんとなくスマホで潰す。",q:"5分（ふん）の空（あ）き時間（じかん）。良（よ）い使（つか）い方（かた）は？",opts:["次（つぎ）の準備（じゅんび）やメモ整理（せいり）にあてる","なんとなくスマホを見（み）て過（す）ごす"],correct:0,explain:"隙間時間の積み重ねが、差を生みます。"},
+ 20:{short:"無用（むよう）な残業（ざんぎょう）をしない",why:"残業ありきだと、時間内に終わらせる工夫をしなくなる。時間内に集中して終えるのがプロ。",ok:"時間内に終える前提で集中し、効率よく働く。",ng:"「残業すればいい」と日中だらだら働く。",q:"仕事（しごと）の進（すす）め方（かた）で良（よ）いのは？",opts:["時間（じかん）内（ない）に終（お）える前提（ぜんてい）で集中（しゅうちゅう）する","残業（ざんぎょう）前提（ぜんてい）でゆっくり進（すす）める"],correct:0,explain:"時間内に終える意識が効率を上げます。"},
+
+ /* ===== 3. 情報のQC ===== */
+ 21:{short:"報（ほう）連（れん）相（そう）を自分（じぶん）から行（おこな）う",why:"悪い情報ほど早く。報告・連絡・相談を自分から出せば、相手は早く判断でき、ミスも小さく済みます。",ok:"進捗や問題を、聞かれる前に自分から伝える。",ng:"聞かれるまで黙っている／悪い情報を後回しにする。",q:"作業（さぎょう）で問題（もんだい）が起（お）きた。正（ただ）しいのは？",opts:["すぐ自分（じぶん）から報告（ほうこく）・相談（そうだん）する","聞（き）かれてから話（はな）す"],correct:0,explain:"報連相は自分から。特に悪い情報は早いほど被害が小さい。"},
+ 22:{short:"結論（けつろん）から話（はな）す",why:"日本の上司は「で、結局どうなった？」を最初に知りたい。結論→理由の順が、できる人の話し方。",ok:"「資料は明日完成します。理由は2つあります」と結論を先に。",ng:"経緯を長々話して、結論がなかなか出てこない。",q:"報告（ほうこく）のしかたで良（よ）いのは？",opts:["結論（けつろん）を先（さき）に言（い）ってから理由（りゆう）を話（はな）す","起（お）きたことを順番（じゅんばん）に全部（ぜんぶ）話（はな）す"],correct:0,explain:"結論が先だと、相手はすぐ判断できます。"},
+ 23:{short:"事実（じじつ）と意見（いけん）を分（わ）けて話（はな）す",why:"事実（起きたこと）と意見（自分の考え）が混ざると、相手が誤解します。特に通訳が入ると混乱の元。",ok:"「事実は〇〇です。私の意見は△△です」と分けて伝える。",ng:"事実と自分の推測を混ぜて話す。",q:"報告（ほうこく）で良（よ）いのは？",opts:["事実（じじつ）と意見（いけん）を分（わ）けて伝（つた）える","事実（じじつ）と自分（じぶん）の考（かんが）えをまとめて話（はな）す"],correct:0,explain:"分けて話すと、相手が正しく判断できます。"},
+ 24:{short:"指示（しじ）を復唱（ふくしょう）確認（かくにん）する",why:"「〇〇ですね、分かりました」と確認すれば、聞き間違いや解釈のズレを防げます。",ok:"指示を受けたら要点を復唱して確認する。",ng:"分かったつもりで確認せずに始める。",q:"指示（しじ）を受（う）けたとき良（よ）いのは？",opts:["「〇〇ですね」と復唱（ふくしょう）して確認（かくにん）する","うなずいてすぐ作業（さぎょう）を始（はじ）める"],correct:0,explain:"復唱でズレを防げる。特に外国語のやり取りで有効です。"},
+ 25:{short:"必（かなら）ずメモを取（と）る",why:"記憶より記録。メモを取る人は同じことを聞かず、信頼されます。",ok:"教わるときは手を止めてメモし、後で見返せるように書く。",ng:"「覚えました」と言ってメモしない。",q:"教（おそ）わるとき良（よ）いのは？",opts:["メモを取（と）り、後（あと）で見返（みかえ）せるようにする","頭（あたま）で覚（おぼ）えようとする"],correct:0,explain:"メモは記憶より確実。同じ質問の繰り返しを防ぎます。"},
+ 26:{short:"分（わ）からないことはすぐ質問（しつもん）",why:"分からないまま進めると大きなミスに。早く聞けば早く解決します。",ok:"分からない点はその場で、または早めに質問する。",ng:"分からないのに自己判断で進める。",q:"指示（しじ）の意味（いみ）が分（わ）からない。正（ただ）しいのは？",opts:["早（はや）めに質問（しつもん）して確認（かくにん）する","たぶんこうだろうと進（すす）める"],correct:0,explain:"早い質問が、大きなミスを防ぎます。"},
+ 27:{short:"バッドニュースを先（さき）に伝（つた）える",why:"悪い知らせほど、決定権のある人に届くまで時間がかかる。先に伝えれば早く手を打てます。",ok:"悪い情報・トラブルを最優先で、早く正確に伝える。",ng:"良い報告を先にして、悪い話を後回しにする／隠す。",q:"良（よ）い知（し）らせと悪（わる）い知（し）らせ、どちらを先（さき）に？",opts:["悪（わる）い知（し）らせを先（さき）に伝（つた）える","良（よ）い知（し）らせを先（さき）に伝（つた）える"],correct:0,explain:"悪い情報は早いほど対処できる。隠すのが最悪です。"},
+ 28:{short:"相談（そうだん）時（じ）は自分（じぶん）の案（あん）を持（も）つ",why:"状況だけ伝えると何度もやり取りが必要。「自分はこう思う」という案を持って相談すると早い。",ok:"「〇〇な状況です。私は△△したいですが、どうでしょう」と案を添える。",ng:"状況だけ伝えて「どうしましょう？」で終わる。",q:"相談（そうだん）のしかたで良（よ）いのは？",opts:["自分（じぶん）の案（あん）を持（も）って相談（そうだん）する","状況（じょうきょう）だけ伝（つた）えて指示（しじ）を待（ま）つ"],correct:0,explain:"案があると、相談が一度で決まりやすい。"},
+ 29:{short:"相手（あいて）の話（はなし）を最後（さいご）まで聞（き）く",why:"途中でさえぎると、誤解や失礼に。最後まで聞いてから質問するのが基本。",ok:"相手が話し終わるまで聞き、分からなければ最後に質問する。",ng:"途中で口を挟む／分かったつもりで作業を始める。",q:"相手（あいて）が説明（せつめい）中（ちゅう）。良（よ）いのは？",opts:["最後（さいご）まで聞（き）いてから質問（しつもん）する","途中（とちゅう）で分（わ）かったら作業（さぎょう）を始（はじ）める"],correct:0,explain:"最後まで聞くことが、ミスと誤解を防ぎます。"},
+ 30:{short:"件名（けんめい）を具体（ぐたい）的（てき）に書（か）く",why:"件名が具体的だと、一目で用件が分かり、相手の時間を節約します。",ok:"「【依頼】〇〇の資料を明日まで」のように具体的に書く。",ng:"「お疲れ様です」「ちょっと」など中身が分からない件名。",q:"メールの件名（けんめい）で良（よ）いのは？",opts:["用件（ようけん）が一目（ひとめ）で分（わ）かる具体（ぐたい）的（てき）な件名（けんめい）","「お疲（つか）れ様（さま）です」だけ"],correct:0,explain:"具体的な件名は、相手がすぐ理解・対応できます。"},
+
+ /* ===== 4. 自責と完結 ===== */
+ 31:{short:"まず自分（じぶん）に非（ひ）がなかったか",why:"問題が起きたとき、人のせい（他責）にすると成長が止まる。まず自分にできたことを考える（自責）と伸びます。",ok:"「自分にできたことはなかったか」をまず考える。",ng:"「相手が悪い」「環境が悪い」で終わる。",q:"仕事（しごと）で問題（もんだい）が起（お）きた。まず考（かんが）えるべきは？",opts:["自分（じぶん）にできたことはなかったか","誰（だれ）のせいで起（お）きたか"],correct:0,explain:"自責で考える人が成長します。他責では何も変わりません。"},
+ 32:{short:"言（い）い訳（わけ）をしない",why:"言い訳は信頼を下げ、改善も止めます。事実を認めて次を考える方が前に進みます。",ok:"できなかった事実を認め、「次はこうします」と話す。",ng:"「忙しかった」「聞いてない」と理由を並べる。",q:"ミスを指摘（してき）された。良（よ）い反応（はんのう）は？",opts:["認（みと）めて「次（つぎ）はこうします」と言（い）う","できなかった理由（りゆう）を並（なら）べる"],correct:0,explain:"言い訳より、次の改善を語る人が信頼されます。"},
+ 33:{short:"最後（さいご）まで自分（じぶん）で完結（かんけつ）させる",why:"途中で投げ出すと、誰かが尻拭いをします。任された仕事を最後までやり切る人が信頼される。",ok:"引き受けた仕事は責任を持って完了まで進める。",ng:"途中で放置する／中途半端で人任せにする。",q:"任（まか）された仕事（しごと）の進（すす）め方（かた）で良（よ）いのは？",opts:["最後（さいご）まで責任（せきにん）を持（も）って完了（かんりょう）させる","難（むずか）しくなったら途中（とちゅう）でやめる"],correct:0,explain:"やり切る姿勢が信頼を生みます。"},
+ 34:{short:"できていないことを認（みと）める",why:"できていない自分を認めるのは勇気がいるが、そこからしか成長は始まらない。",ok:"弱点を素直に認め、「どう良くするか」を考える。",ng:"できていないのに「できている」と思い込む。",q:"自分（じぶん）の弱点（じゃくてん）に気（き）づいたら？",opts:["認（みと）めて改善（かいぜん）方法（ほうほう）を考（かんが）える","気（き）づかないふりをする"],correct:0,explain:"弱点を認めることが、成長の出発点です。"},
+ 35:{short:"失敗（しっぱい）を学（まな）びに変（か）える",why:"失敗は財産。「なぜ失敗したか」を考えれば次に活きる。落ち込むだけでは何も変わらない。",ok:"失敗の原因を分析し、次への教訓にする。",ng:"落ち込むだけ／同じ失敗を繰り返す。",q:"失敗（しっぱい）したとき良（よ）いのは？",opts:["原因（げんいん）を考（かんが）え次（つぎ）に活（い）かす","落（お）ち込（こ）んで終（お）わる"],correct:0,explain:"失敗から学ぶ人が、いちばん速く成長します。"},
+ 36:{short:"相手（あいて）の意図（いと）を汲（く）み取（と）る",why:"言葉の表面だけでなく「本当に何を求めているか」を考えると、期待に応えられます。",ok:"指示の背景・目的を考え、相手が本当に欲しいものを届ける。",ng:"言われたことだけを字面どおりにやる。",q:"指示（しじ）を受（う）けたとき良（よ）いのは？",opts:["目的（もくてき）を考（かんが）えて相手（あいて）の本当（ほんとう）の狙（ねら）いに応（こた）える","言葉（ことば）どおりにだけ動（うご）く"],correct:0,explain:"意図を汲める人が、期待を超えられます。"},
+ 37:{short:"作業（さぎょう）でなく成果（せいか）で考（かんが）える",why:"「やったか」より「結果が出たか」。作業をこなすだけでなく、目的を達成したかで考えます。",ok:"「この作業は何のため？」を意識し、成果につなげる。",ng:"言われた作業を終えただけで満足する。",q:"仕事（しごと）の考（かんが）え方（かた）で良（よ）いのは？",opts:["目的（もくてき）・成果（せいか）を意識（いしき）して動（うご）く","作業（さぎょう）を終（お）えれば十分（じゅうぶん）"],correct:0,explain:"成果で考える人が、価値を生みます。"},
+ 38:{short:"感情（かんじょう）を職場（しょくば）に持（も）ち込（こ）まない",why:"機嫌で態度が変わると、周りが気を使い、チームが乱れます。プロは感情を仕事に持ち込まない。",ok:"私的な感情と仕事を分け、安定した態度で接する。",ng:"イライラを態度や言葉に出す。",q:"嫌（いや）なことがあった日（ひ）。職場（しょくば）での態度（たいど）は？",opts:["切（き）り替（か）えて普段（ふだん）どおり接（せっ）する","機嫌（きげん）が悪（わる）い態度（たいど）を出（だ）す"],correct:0,explain:"安定した態度が、信頼できるプロの条件です。"},
+ 39:{short:"キャパを把握（はあく）し早（はや）めに相談（そうだん）",why:"抱えすぎて中間報告もできないと、最後に大きな迷惑に。自分の限界を知り早く相談を。",ok:"手一杯になりそうなら早めに「相談」して調整する。",ng:"抱え込んで、ギリギリで「できませんでした」。",q:"仕事（しごと）が手（て）一杯（いっぱい）になりそう。良（よ）いのは？",opts:["早（はや）めに相談（そうだん）して調整（ちょうせい）する","一人（ひとり）で抱（かか）え込（こ）む"],correct:0,explain:"早い相談が、周りへの迷惑を防ぎます。"},
+ 40:{short:"自責（じせき）を成長（せいちょう）の原動（げんどう）力（りょく）に",why:"「自分次第で変えられる」と信じる人が伸びる。自責は自分を責めることではなく、力にすること。",ok:"問題を「自分が成長するチャンス」と捉える。",ng:"「自分には関係ない」と当事者意識を持たない。",q:"自責（じせき）の考（かんが）え方（かた）で正（ただ）しいのは？",opts:["自分（じぶん）が変（か）えられる力（ちから）だと捉（とら）える","自分（じぶん）を責（せ）めて落（お）ち込（こ）むこと"],correct:0,explain:"自責＝自分を責めることではなく、成長の原動力です。"},
+
+ /* ===== 5. 問題解決とKAIZEN ===== */
+ 41:{short:"仕組（しく）みで問題（もんだい）を捉（とら）える",why:"ミスを個人のせいにしても再発します。「仕組み」を直せば、誰がやっても防げる。",ok:"再発防止を、人ではなく仕組み・ルールで考える。",ng:"「あの人が悪い」で終わらせる。",q:"同（おな）じミスが続（つづ）く。良（よ）い対策（たいさく）は？",opts:["仕組（しく）みを変（か）えて誰（だれ）でも防（ふせ）げるようにする","担当（たんとう）者（しゃ）を責（せ）める"],correct:0,explain:"仕組みで捉えると、再発を根本から防げます。"},
+ 42:{short:"なぜを5回（かい）考（かんが）える",why:"「なぜ？」を繰り返すと、表面でなく本当の原因（真因）にたどり着けます。",ok:"問題の原因に「なぜ？」を5回ほど掘り下げる。",ng:"最初に見えた原因で満足してしまう。",q:"問題（もんだい）の原因（げんいん）を探（さぐ）るとき良（よ）いのは？",opts:["「なぜ？」を繰（く）り返（かえ）して真因（しんいん）を探（さぐ）る","最初（さいしょ）に思（おも）いついた原因（げんいん）で決（き）める"],correct:0,explain:"なぜなぜ思考で、本当の原因が見えてきます。"},
+ 43:{short:"標準（ひょうじゅん）を守（まも）り改善（かいぜん）提案（ていあん）する",why:"まずルールを守り、その上で「なぜ？もっと良くできないか」を提案する。守ってから変える。",ok:"標準を守りつつ、改善点を見つけたら提案する。",ng:"自己流で勝手に変える／不満を言うだけで提案しない。",q:"仕事（しごと）のやり方（かた）に疑問（ぎもん）。正（ただ）しいのは？",opts:["まず守（まも）った上（うえ）で改善（かいぜん）を提案（ていあん）する","勝手（かって）に自分（じぶん）のやり方（かた）に変（か）える"],correct:0,explain:"守ってから改善提案。これが正しいKAIZENです。"},
+ 44:{short:"ヒヤリハットを報告（ほうこく）する",why:"「危なかった」を共有すれば、大きな事故やミスを未然に防げます。隠すと次に誰かが事故る。",ok:"ヒヤッとしたことを隠さず、チームに共有する。",ng:"「大事に至らなかったから」と黙っておく。",q:"危（あぶ）ない場面（ばめん）があったが事故（じこ）にはならなかった。良（よ）いのは？",opts:["共有（きょうゆう）して再発（さいはつ）を防（ふせ）ぐ","何（なに）もなかったので黙（だま）っておく"],correct:0,explain:"ヒヤリハットの共有が、大事故を防ぎます。"},
+ 45:{short:"成功（せいこう）を標準（ひょうじゅん）化（か）し共有（きょうゆう）する",why:"うまくいったやり方を「自分だけの技」にせず、誰でもできる形にすると、チーム全体が強くなる。",ok:"うまくいった方法を手順化し、みんなに共有する。",ng:"成功のコツを自分だけのものにする。",q:"良（よ）い方法（ほうほう）を見（み）つけた。チームのために良（よ）いのは？",opts:["手順（てじゅん）にしてみんなに共有（きょうゆう）する","自分（じぶん）だけの武器（ぶき）にする"],correct:0,explain:"成功の標準化が、チーム全体の力を上げます。"},
+ 46:{short:"業務（ぎょうむ）効率（こうりつ）化（か）を考（かんが）える",why:"「やりにくい」を我慢せず、やりやすくする工夫が生産性を上げます。",ok:"面倒・無駄な作業を見つけ、改善する方法を考える。",ng:"「昔からこうだから」と非効率を続ける。",q:"毎回（まいかい）手間（てま）のかかる作業（さぎょう）がある。良（よ）いのは？",opts:["もっと楽（らく）にできないか工夫（くふう）する","ずっとこのやり方（かた）を続（つづ）ける"],correct:0,explain:"効率化の工夫が、時間と品質を生みます。"},
+ 47:{short:"AI等（とう）を活用（かつよう）する",why:"新しい道具を上手に使えば、仕事が速く正確になります。どう使うかを考えるのが大事。",ok:"AIや新ツールを学び、仕事に活かす方法を考える。",ng:"新しい道具を「難しそう」と避ける。",q:"新（あたら）しい便利（べんり）なツールが出（で）た。良（よ）いのは？",opts:["どう仕事（しごと）に活（い）かせるか試（ため）す","難（むずか）しそうなので使（つか）わない"],correct:0,explain:"新しい道具を使いこなす人が、これから伸びます。"},
+ 48:{short:"変化（へんか）に即応（そくおう）する",why:"状況やルールは変わります。素早く対応できる人が、変化の時代で信頼されます。",ok:"変化を受け入れ、やり方を柔軟に変える。",ng:"「前はこうだった」と変化を嫌がる。",q:"仕事（しごと）のやり方（かた）が変（か）わった。良（よ）い対応（たいおう）は？",opts:["素早（すばや）く新（あたら）しいやり方（かた）に合（あ）わせる","前（まえ）のやり方（かた）にこだわる"],correct:0,explain:"変化に即応できる柔軟さが、強みになります。"},
+ 49:{short:"再発（さいはつ）防止（ぼうし）の仕組（しく）みを作（つく）る",why:"「気をつけます」だけでは再発します。仕組みで防ぐと、気をつけなくても防げる。",ok:"ミスの後、再発しない仕組み（チェック・手順）を作る。",ng:"「次は気をつけます」だけで終わる。",q:"ミスの後（あと）の対策（たいさく）で良（よ）いのは？",opts:["再発（さいはつ）しない仕組（しく）みを作（つく）る","気（き）をつけると心（こころ）に誓（ちか）う"],correct:0,explain:"仕組みで防げば、人が変わっても再発しません。"},
+ 50:{short:"日々（ひび）改善（かいぜん）する",why:"大きな改革でなくても、毎日少しずつ良くする積み重ねが大きな差になります。",ok:"毎日「昨日より少し良く」を意識して工夫する。",ng:"「今のままでいい」と立ち止まる。",q:"成長（せいちょう）のための良（よ）い習慣（しゅうかん）は？",opts:["毎日（まいにち）少（すこ）しずつ改善（かいぜん）する","大（おお）きく変（か）わる時（とき）だけ頑張（がんば）る"],correct:0,explain:"日々の小さな改善（KAIZEN）が、大きな成長になります。"},
+
+ /* ===== 6. 5Sとセキュリティ ===== */
+ 51:{short:"デスクを整理（せいり）し即（そく）取（と）り出（だ）せる",why:"探す時間は無駄。必要な物がすぐ取り出せる状態が、効率と信頼を生みます。個人情報の管理にも重要。",ok:"必要な物を定位置に置き、すぐ取り出せるようにする。",ng:"書類が山積みで、必要な物を探すのに時間がかかる。",q:"デスクの状態（じょうたい）で良（よ）いのは？",opts:["必要（ひつよう）な物（もの）がすぐ取（と）り出（だ）せる","とりあえず積（つ）んである"],correct:0,explain:"整理されたデスクは、時間も信頼も生みます。"},
+ 52:{short:"PC内（ない）を整理（せいり）する",why:"ファイルが散らかると、探す時間も間違いも増えます。フォルダを整理し、すぐ見つかる状態に。",ok:"ファイルを分かりやすいフォルダ・名前で整理する。",ng:"デスクトップにファイルが散乱している。",q:"PCのファイル管理（かんり）で良（よ）いのは？",opts:["フォルダと名前（なまえ）で整理（せいり）しておく","とりあえずデスクトップに置（お）く"],correct:0,explain:"PC内の整理も、5Sの一部です。"},
+ 53:{short:"共有（きょうゆう）スペースを綺麗（きれい）に使（つか）う",why:"みんなが使う場所は、次の人のことを考えてきれいに。裏紙の個人情報など、思わぬ漏洩も防ぎます。",ok:"共有スペースは使ったらきれいにし、次の人が使いやすくする。",ng:"自分が使った後、散らかしたまま離れる。",q:"共有（きょうゆう）スペースの使（つか）い方（かた）で良（よ）いのは？",opts:["次（つぎ）の人（ひと）のためにきれいにする","自分（じぶん）が使（つか）えればよい"],correct:0,explain:"共有の場を大切にできる人が、信頼されます。"},
+ 54:{short:"画面（がめん）ロックを徹底（てってい）する",why:"離席中の画面から情報が漏れます。学生に情報管理を求める前に、自分が徹底する。",ok:"席を離れるときは必ず画面をロックする。",ng:"画面を開いたまま離席する。",q:"席（せき）を立（た）つとき良（よ）いのは？",opts:["画面（がめん）をロックする","開（ひら）いたまま少（すこ）しだけ離（はな）れる"],correct:0,explain:"短い離席でも、画面ロックは情報を守る基本です。"},
+ 55:{short:"パスワード管理（かんり）を徹底（てってい）する",why:"パスワードが漏れると大きな被害に。使い回しや付箋メモは危険。",ok:"推測されにくいパスワードを使い、安全に管理する。",ng:"簡単なパスワード／付箋に書いて貼る／使い回す。",q:"パスワードの扱（あつか）いで良（よ）いのは？",opts:["推測（すいそく）されにくく、安全（あんぜん）に管理（かんり）する","覚（おぼ）えやすいよう付箋（ふせん）に貼（は）る"],correct:0,explain:"パスワード管理は、情報を守る最前線です。"},
+ 56:{short:"機密（きみつ）情報（じょうほう）を外部（がいぶ）で話（はな）さない",why:"電車やカフェでの会話から情報が漏れます。会社や顧客の情報は外で話さない。",ok:"機密・個人情報は社外で口にしない。",ng:"外食先や電車で仕事の具体的な話をする。",q:"外（そと）で同僚（どうりょう）と仕事（しごと）の話（はなし）。良（よ）いのは？",opts:["機密（きみつ）や個人（こじん）情報（じょうほう）は外（そと）で話（はな）さない","周（まわ）りに人（ひと）がいても普通（ふつう）に話（はな）す"],correct:0,explain:"何気ない会話からの漏洩を防ぐのも仕事です。"},
+ 57:{short:"データをバックアップする",why:"データは突然消えることがあります。バックアップがあれば、失っても復旧できます。",ok:"大事なデータは定期的にバックアップする。",ng:"1か所だけに保存し、バックアップしない。",q:"大事（だいじ）なデータの扱（あつか）いで良（よ）いのは？",opts:["定期（ていき）的（てき）にバックアップする","1か所（しょ）に保存（ほぞん）しておけば十分（じゅうぶん）"],correct:0,explain:"バックアップが、万一のときにあなたを守ります。"},
+ 58:{short:"備品（びひん）を適切（てきせつ）に扱（あつか）う",why:"会社の備品はみんなの資産。丁寧に正しく使うことで長く使え、コストも下がります。",ok:"備品を正しく丁寧に使い、決まった場所に戻す。",ng:"乱暴に使う／私物化する／戻さない。",q:"会社（かいしゃ）の備品（びひん）の扱（あつか）いで良（よ）いのは？",opts:["丁寧（ていねい）に使（つか）い、元（もと）に戻（もど）す","自分（じぶん）の物（もの）のように私用（しよう）で使（つか）う"],correct:0,explain:"備品を大切にする姿勢が、信頼につながります。"},
+ 59:{short:"機密（きみつ）書類（しょるい）を確実（かくじつ）に廃棄（はいき）する",why:"個人情報の書類をそのまま捨てると漏洩に。シュレッダーなどで確実に処分します。",ok:"機密書類はシュレッダー等で確実に廃棄する。",ng:"個人情報のある紙をそのままゴミ箱へ／裏紙に使う。",q:"個人（こじん）情報（じょうほう）が載（の）った紙（かみ）を捨（す）てる。良（よ）いのは？",opts:["シュレッダーで確実（かくじつ）に処分（しょぶん）する","そのままゴミ箱（ごみばこ）に捨（す）てる"],correct:0,explain:"確実な廃棄が、情報漏洩を防ぎます。"},
+ 60:{short:"SNSの取（と）り扱（あつか）いに注意（ちゅうい）",why:"SNSへの安易な投稿が、会社や個人情報の漏洩・トラブルになります。投稿前に一度考える。",ok:"仕事・顧客・同僚の情報はSNSに載せない。投稿前に確認する。",ng:"職場の写真や仕事の話を気軽に投稿する。",q:"SNSへの投稿（とうこう）で良（よ）いのは？",opts:["仕事（しごと）や個人（こじん）情報（じょうほう）は載（の）せない","職場（しょくば）の様子（ようす）を気軽（きがる）に投稿（とうこう）する"],correct:0,explain:"一度の投稿が大問題に。SNSは慎重に扱います。"},
+
+ /* ===== 7. チームワーク ===== */
+ 61:{short:"仲間（なかま）を内（うち）なる顧客（こきゃく）として扱（あつか）う",why:"社内の同僚・他部署も「お客様」と同じ。相手を尊重して仕事を渡すと、全体がうまく回ります。",ok:"社内の相手にも、顧客と同じ丁寧さで接する。",ng:"「社内だから」と雑に対応する。",q:"他（た）部署（ぶしょ）に仕事（しごと）を渡（わた）すとき良（よ）いのは？",opts:["顧客（こきゃく）と同（おな）じ丁寧（ていねい）さで渡（わた）す","社内（しゃない）だから雑（ざつ）でいい"],correct:0,explain:"社内の相手＝内なる顧客。丁寧さが全体を強くします。"},
+ 62:{short:"後（あと）工程（こうてい）を意識（いしき）する",why:"自分の仕事の次に受け取る人（後工程）が困らないように。流れ全体を考えます。",ok:"次に受け取る人が使いやすいように仕上げる。",ng:"自分の作業が終わればいいと、次の人を考えない。",q:"作業（さぎょう）を仕上（しあ）げるとき良（よ）いのは？",opts:["次（つぎ）の人（ひと）が使（つか）いやすいようにする","自分（じぶん）の分（ぶん）が終（お）わればよい"],correct:0,explain:"後工程への思いやりが、全体の品質を上げます。"},
+ 63:{short:"後輩（こうはい）を育（そだ）てる",why:"自分が学んだことを後輩に伝えると、チームが強くなり、自分の理解も深まります。",ok:"後輩に丁寧に教え、成長を手助けする。",ng:"「自分の仕事ではない」と後輩を放置する。",q:"後輩（こうはい）が困（こま）っている。良（よ）いのは？",opts:["教（おし）えて成長（せいちょう）を助（たす）ける","自分（じぶん）には関係（かんけい）ないと放（ほう）っておく"],correct:0,explain:"後輩を育てる人が、リーダーへと成長します。"},
+ 64:{short:"仲間（なかま）の成功（せいこう）を称賛（しょうさん）する",why:"仲間の成功を素直に喜べるチームは強い。妬みより称賛が、良い雰囲気を作ります。",ok:"仲間がうまくいったら素直に「すごいね」と称える。",ng:"仲間の成功を妬む／無視する。",q:"同僚（どうりょう）が成果（せいか）を出（だ）した。良（よ）い反応（はんのう）は？",opts:["素直（すなお）に称賛（しょうさん）する","うらやんで黙（だま）っている"],correct:0,explain:"称賛し合えるチームが、成果を生みます。"},
+ 65:{short:"悪口（わるぐち）を言（い）わない",why:"陰口はチームの信頼を壊します。言いたいことは本人に、建設的に伝える。",ok:"不満は陰で言わず、本人や上司に建設的に伝える。",ng:"本人のいない所で悪口・陰口を言う。",q:"同僚（どうりょう）に不満（ふまん）がある。良（よ）いのは？",opts:["陰口（かげぐち）でなく建設（けんせつ）的（てき）に本人（ほんにん）や上司（じょうし）へ","他（ほか）の人（ひと）に陰口（かげぐち）を言（い）う"],correct:0,explain:"悪口はチームを壊す。信頼は一度で失います。"},
+ 66:{short:"困（こま）っている仲間（なかま）に声（こえ）をかける",why:"自分の仕事が早く終わったら、困っている人を手伝う。助け合いが会社全体の効率を上げます。",ok:"手が空いたら「手伝うことある？」と声をかける。",ng:"自分の仕事が終わったら、周りを気にせず過ごす。",q:"自分（じぶん）の仕事（しごと）が早（はや）く終（お）わった。良（よ）いのは？",opts:["困（こま）っている人（ひと）に声（こえ）をかける","自分（じぶん）は終（お）わったので休（やす）む"],correct:0,explain:"助け合いが、チーム全体の成果を上げます。"},
+ 67:{short:"ノウハウを共有（きょうゆう）する",why:"面談や面接で得た情報は会社の財産。個人で抱えず共有すると、みんなが成長できます。",ok:"得た知見・コツをマニュアル化し、チームに共有する。",ng:"自分が得た情報を自分だけで持っておく。",q:"仕事（しごと）で役立（やくだ）つ情報（じょうほう）を得（え）た。良（よ）いのは？",opts:["共有（きょうゆう）して会社（かいしゃ）の財産（ざいさん）にする","自分（じぶん）だけが知（し）っておく"],correct:0,explain:"共有された知見が、チームの力になります。"},
+ 68:{short:"多様（たよう）性（せい）を尊重（そんちょう）する",why:"国・文化・考え方の違う仲間を尊重すると、強いチームになります。違いは弱点でなく強み。",ok:"自分と違う考え・文化を尊重し、学ぶ姿勢を持つ。",ng:"自分のやり方・常識だけを正しいと考える。",q:"自分（じぶん）と違（ちが）う考（かんが）えの人（ひと）がいる。良（よ）いのは？",opts:["違（ちが）いを尊重（そんちょう）して学（まな）ぶ","自分（じぶん）の常識（じょうしき）を押（お）し通（とお）す"],correct:0,explain:"多様性を尊重するチームが、強く柔軟になります。"},
+ 69:{short:"感謝（かんしゃ）を伝（つた）える",why:"助けてもらったら言葉で感謝を。感謝が循環するチームは、雰囲気も成果も良くなります。",ok:"小さなことでも「ありがとう」を言葉で伝える。",ng:"してもらって当然と考え、感謝を言わない。",q:"仲間（なかま）に助（たす）けてもらった。良（よ）いのは？",opts:["「ありがとう」と言葉（ことば）で伝（つた）える","当然（とうぜん）なので何（なに）も言（い）わない"],correct:0,explain:"感謝の言葉が、良いチームを作ります。"},
+ 70:{short:"チーム目標（もくひょう）を自分（じぶん）事（ごと）にする",why:"「自分の担当だけ」でなく、チーム全体の目標を自分の目標として追う人が、チームを勝たせます。",ok:"チームの目標・結果を自分事として動く。",ng:"「自分の仕事は終わった」とチームの結果に無関心。",q:"チームの目標（もくひょう）に対（たい）して良（よ）いのは？",opts:["自分（じぶん）事（ごと）として結果（けっか）を追（お）う","自分（じぶん）の担当（たんとう）だけやればよい"],correct:0,explain:"チーム目標を自分事にする人が、信頼されます。"},
+
+ /* ===== 8. 顧客満足（CS） ===== */
+ 71:{short:"顧客（こきゃく）情報（じょうほう）を正確（せいかく）に覚（おぼ）える",why:"顧客の名前・社名を正確に覚えるのは信頼の基本。略称や思い込みは失礼になります。",ok:"顧客の正式名称・情報を正確に確認して覚える。",ng:"社名を略したり、思い込みで覚える。",q:"顧客（こきゃく）の会社（かいしゃ）名（めい）の扱（あつか）いで良（よ）いのは？",opts:["正式（せいしき）名称（めいしょう）を正確（せいかく）に覚（おぼ）える","だいたいの略称（りゃくしょう）で覚（おぼ）える"],correct:0,explain:"正確に覚えることが、信頼の第一歩です。"},
+ 72:{short:"顧客（こきゃく）の困（こま）りごとを先読（さきよ）みする",why:"言われる前に困りごとに気づき先回りできると、顧客の信頼と満足が大きく上がります。",ok:"顧客が何に困りそうかを考え、先回りで備える。",ng:"言われたことだけに対応する。",q:"顧客（こきゃく）対応（たいおう）で良（よ）いのは？",opts:["困（こま）りごとを先読（さきよ）みして備（そな）える","頼（たの）まれたことだけやる"],correct:0,explain:"先読みできる人が、期待を超えられます。"},
+ 73:{short:"付加（ふか）価値（かち）を添（そ）える",why:"言われたことに「＋α」の価値を添えると、選ばれ続ける存在になります。",ok:"依頼に対し、役立つ情報や提案を一つ添える。",ng:"言われた最低限だけを返す。",q:"依頼（いらい）に応（こた）えるとき良（よ）いのは？",opts:["役立（やくだ）つ＋αを添（そ）える","最低（さいてい）限（げん）だけ返（かえ）す"],correct:0,explain:"小さな付加価値の積み重ねが、差を生みます。"},
+ 74:{short:"自信（じしん）と謙虚（けんきょ）さを併（あわ）せ持（も）つ",why:"自信があると頼られ、謙虚だと学べる。両方を持つ人が長く信頼されます。",ok:"自分の仕事に自信を持ちつつ、学ぶ謙虚さも忘れない。",ng:"傲慢になる／自信がなく頼りない。",q:"プロとしての良（よ）い姿勢（しせい）は？",opts:["自信（じしん）と謙虚（けんきょ）さの両方（りょうほう）を持（も）つ","自信（じしん）があれば謙虚（けんきょ）さは不要（ふよう）"],correct:0,explain:"自信と謙虚さの両立が、信頼される人を作ります。"},
+ 75:{short:"業界（ぎょうかい）理解（りかい）を深（ふか）める",why:"顧客の業界を知ると、的確な提案ができ、信頼されます。",ok:"顧客の業界・仕事を勉強し、理解を深める。",ng:"自分の担当範囲しか知ろうとしない。",q:"顧客（こきゃく）に良（よ）い提案（ていあん）をするには？",opts:["顧客（こきゃく）の業界（ぎょうかい）を理解（りかい）する","自分（じぶん）の仕事（しごと）だけ知（し）っていればよい"],correct:0,explain:"業界理解が、的確な提案と信頼を生みます。"},
+ 76:{short:"期待（きたい）を超（こ）える",why:"「期待どおり」で満足せず、少し超えると感動が生まれ、ファンになってもらえます。相手の限界を勝手に決めない。",ok:"相手の期待を一歩超える工夫をする。",ng:"「これくらいでいい」と限界を自分で決める。",q:"良（よ）い仕事（しごと）とは？",opts:["期待（きたい）を一歩（いっぽ）超（こ）える","期待（きたい）どおりで十分（じゅうぶん）"],correct:0,explain:"期待を超える瞬間に、感動と信頼が生まれます。"},
+ 77:{short:"クレームに誠実（せいじつ）迅速（じんそく）に対応（たいおう）",why:"クレームは信頼回復のチャンス。誠実に素早く対応すれば、かえって関係が深まります。",ok:"クレームには言い訳せず、誠実に素早く対応する。",ng:"後回しにする／言い訳する／隠す。",q:"クレームを受（う）けた。良（よ）いのは？",opts:["誠実（せいじつ）に素早（すばや）く対応（たいおう）する","後回（あとまわ）しにして様子（ようす）を見（み）る"],correct:0,explain:"迅速・誠実な対応が、ピンチをチャンスに変えます。"},
+ 78:{short:"会社（かいしゃ）の代表（だいひょう）として振（ふ）る舞（ま）う",why:"あなたの振る舞いが会社の印象になります。一人ひとりが「会社の顔」。",ok:"来客対応など、常に会社の代表として丁寧に振る舞う。",ng:"「自分一人くらい」と気を抜く。",q:"お客（きゃく）様（さま）の前（まえ）での振（ふ）る舞（ま）いで良（よ）いのは？",opts:["会社（かいしゃ）の代表（だいひょう）として丁寧（ていねい）に","自分（じぶん）一人（ひとり）くらい気（き）を抜（ぬ）いてよい"],correct:0,explain:"あなたの態度が、会社全体の評価になります。"},
+ 79:{short:"顧客（こきゃく）成功（せいこう）を最（さい）優先（ゆうせん）に考（かんが）える",why:"自分の都合より「顧客が成功すること」を最優先に考えると、長期的に信頼され選ばれます。",ok:"自分の都合より、顧客の成功を優先して考える。",ng:"自分のやりやすさ・都合を優先する。",q:"判断（はんだん）に迷（まよ）ったとき、優先（ゆうせん）すべきは？",opts:["顧客（こきゃく）の成功（せいこう）","自分（じぶん）の都合（つごう）"],correct:0,explain:"顧客の成功を願う人が、長く選ばれます。"},
+ 80:{short:"長期（ちょうき）的（てき）関係（かんけい）を築（きず）く",why:"目先の利益より、長く続く信頼関係の方が大きな価値を生みます。",ok:"目先でなく、長く付き合える信頼関係を大切にする。",ng:"その場の利益だけを優先する。",q:"顧客（こきゃく）との付（つ）き合（あ）い方（かた）で良（よ）いのは？",opts:["長期（ちょうき）的（てき）な信頼（しんらい）関係（かんけい）を築（きず）く","目先（めさき）の利益（りえき）を優先（ゆうせん）する"],correct:0,explain:"長期的な関係が、最大の財産になります。"},
+
+ /* ===== 9. 自己研鑽 ===== */
+ 81:{short:"専門（せんもん）知識（ちしき）を学（まな）び続（つづ）ける",why:"知識を増やすほど、できることが増え、顧客満足も上がります。学びを止めると成長も止まる。",ok:"自分の仕事の専門知識を、継続的に学ぶ。",ng:"今ある知識で満足し、学ばない。",q:"プロとして良（よ）い姿勢（しせい）は？",opts:["専門（せんもん）知識（ちしき）を学（まな）び続（つづ）ける","今（いま）の知識（ちしき）で十分（じゅうぶん）"],correct:0,explain:"学び続ける人が、価値を高め続けます。"},
+ 82:{short:"批判（ひはん）を成長（せいちょう）材料（ざいりょう）にする",why:"批判やダメ出しは、成長のヒント。落ち込まず、改善に使える人が伸びます。",ok:"指摘を「成長のヒント」として受け止め改善する。",ng:"批判に腹を立てる／落ち込んで終わる。",q:"厳（きび）しい指摘（してき）を受（う）けた。良（よ）いのは？",opts:["成長（せいちょう）のヒントとして活（い）かす","腹（はら）を立（た）てて無視（むし）する"],correct:0,explain:"批判を活かせる人が、いちばん伸びます。"},
+ 83:{short:"強（つよ）み弱（よわ）みを把握（はあく）する",why:"自分の強み・弱みを知ると、強みを活かし弱みを補えます。自己理解が成長の土台。",ok:"自分の得意・苦手を正しく把握する。",ng:"自分を客観的に見ようとしない。",q:"成長（せいちょう）のために良（よ）いのは？",opts:["自分（じぶん）の強（つよ）み弱（よわ）みを把握（はあく）する","気（き）にせず進（すす）む"],correct:0,explain:"自己理解が、効率的な成長の出発点です。"},
+ 84:{short:"PDCAを回（まわ）す",why:"計画(P)→実行(D)→振り返り(C)→改善(A)を回すと、確実に成長します。「やりっぱなし」では伸びない。",ok:"計画・実行の後、必ず振り返り次に活かす。",ng:"やりっぱなしで振り返らない。",q:"成長（せいちょう）を続（つづ）けるコツは？",opts:["計画（けいかく）→実行（じっこう）→振（ふ）り返（かえ）り→改善（かいぜん）を回（まわ）す","実行（じっこう）したら次（つぎ）へ進（すす）むだけ"],correct:0,explain:"PDCAを回す習慣が、着実な成長を生みます。"},
+ 85:{short:"言語（げんご）能力（のうりょく）を磨（みが）く",why:"日本語など言語力が上がるほど、正確に伝わり、仕事の幅が広がります。",ok:"日本語・伝える力を日々磨く。",ng:"「通じればいい」と上達を諦める。",q:"言語（げんご）力（りょく）について良（よ）い姿勢（しせい）は？",opts:["継続（けいぞく）的（てき）に磨（みが）いて伝（つた）える力（ちから）を上（あ）げる","通（つう）じればそれでよい"],correct:0,explain:"言語力の向上が、仕事の幅と信頼を広げます。"},
+ 86:{short:"社会（しゃかい）情勢（じょうせい）へ関心（かんしん）を持（も）つ",why:"世の中の動きを知ると、仕事の背景が分かり、視野が広がります。",ok:"ニュースや社会の動きに関心を持つ。",ng:"自分の周りのことしか興味を持たない。",q:"視野（しや）を広（ひろ）げるために良（よ）いのは？",opts:["社会（しゃかい）の動（うご）きに関心（かんしん）を持（も）つ","自分（じぶん）の周（まわ）りだけ見（み）る"],correct:0,explain:"社会への関心が、仕事の理解を深めます。"},
+ 87:{short:"ロールモデルを持（も）つ",why:"目標になる人を持つと、「あの人ならどうするか」で自分を高められます。",ok:"尊敬できる人を見つけ、学び目標にする。",ng:"お手本を持たず、なんとなく働く。",q:"成長（せいちょう）のために良（よ）いのは？",opts:["お手本（てほん）となる人（ひと）を持（も）つ","特（とく）に目標（もくひょう）は持（も）たない"],correct:0,explain:"ロールモデルが、成長の道しるべになります。"},
+ 88:{short:"キャリアを自（みずか）ら設計（せっけい）する",why:"「会社任せ」でなく、自分でなりたい姿を描き計画する人が、望むキャリアを得ます。",ok:"将来なりたい姿を考え、今の行動を計画する。",ng:"言われるまま働き、将来を考えない。",q:"キャリアについて良（よ）い姿勢（しせい）は？",opts:["自分（じぶん）で将来（しょうらい）を設計（せっけい）する","会社（かいしゃ）に任（まか）せる"],correct:0,explain:"自分でキャリアを描く人が、未来を選べます。"},
+ 89:{short:"新（しん）技術（ぎじゅつ）に触（ふ）れる",why:"新しい技術やAIに触れておくと、変化に対応でき、仕事を効率化できます。",ok:"新しい技術・ツールに積極的に触れ、試す。",ng:"新しいものを「自分には無理」と避ける。",q:"新（しん）技術（ぎじゅつ）に対（たい）して良（よ）いのは？",opts:["積極（せっきょく）的（てき）に触（ふ）れて試（ため）す","関係（かんけい）ないと避（さ）ける"],correct:0,explain:"新技術に触れる人が、これからの時代に強い。"},
+ 90:{short:"学（まな）びを止（と）めない",why:"企業のニーズは変わり続けます。学びを止めない人だけが、必要とされ続けます。",ok:"あらゆる面で学び続ける姿勢を持つ。",ng:"「もう十分学んだ」と止まる。",q:"長（なが）く活躍（かつやく）するために良（よ）いのは？",opts:["学（まな）びを止（と）めない","ある程度（ていど）で学（まな）びを終（お）える"],correct:0,explain:"学び続ける人が、変化の中で必要とされます。"},
+
+ /* ===== 10. プロの覚悟 ===== */
+ 91:{short:"給料（きゅうりょう）の源泉（げんせん）を理解（りかい）する",why:"給料は会社が顧客から得た価値から生まれます。顧客満足を上げることが、自分の給料にもつながる。",ok:"「給料は顧客満足から生まれる」と理解して働く。",ng:"給料を「会社がくれるもの」と当然視する。",q:"給料（きゅうりょう）についての正（ただ）しい理解（りかい）は？",opts:["顧客（こきゃく）満足（まんぞく）から生（う）まれるもの","会社（かいしゃ）が当然（とうぜん）くれるもの"],correct:0,explain:"給料の源泉を理解すると、仕事の意味が変わります。"},
+ 92:{short:"時間（じかん）あたり生産（せいさん）性（せい）を意識（いしき）する",why:"同じ時間で多くの価値を生む意識が、無駄・無理・ムラをなくします。時間にもコスト意識を。",ok:"「この時間でどれだけ価値を生めるか」を意識する。",ng:"時間を気にせずだらだら作業する。",q:"仕事（しごと）の進（すす）め方（かた）で良（よ）いのは？",opts:["時間（じかん）あたりの成果（せいか）を意識（いしき）する","時間（じかん）は気（き）にしない"],correct:0,explain:"時間の生産性を意識する人が、成果を出します。"},
+ 93:{short:"ビジョンと行動（こうどう）を結（むす）びつける",why:"会社の目指す方向（ビジョン）と自分の仕事をつなげると、日々の仕事に意味が生まれます。",ok:"会社のビジョンを理解し、自分の行動に落とし込む。",ng:"会社の方向と無関係に、目の前の作業だけする。",q:"良（よ）い働（はたら）き方（かた）は？",opts:["会社（かいしゃ）のビジョンと自分（じぶん）の行動（こうどう）をつなげる","会社（かいしゃ）の方向（ほうこう）は気（き）にしない"],correct:0,explain:"ビジョンと行動が結びつくと、仕事に意味が宿ります。"},
+ 94:{short:"困難（こんなん）を面白（おもしろ）がる",why:"困難は成長のチャンス。「大変」より「面白い」と捉える人が、壁を越えて伸びます。",ok:"難しい状況を「成長のチャンス」と前向きに捉える。",ng:"困難をただ「つらい」と避ける。",q:"難（むずか）しい仕事（しごと）が来（き）た。良（よ）い捉（とら）え方（かた）は？",opts:["成長（せいちょう）のチャンスと面白（おもしろ）がる","つらいので避（さ）けたい"],correct:0,explain:"困難を面白がる人が、大きく成長します。"},
+ 95:{short:"倫理（りんり）的（てき）に行動（こうどう）する",why:"見ていなくても正しく行動する。倫理は信頼の土台で、一度崩すと取り返せません。",ok:"誰も見ていなくても、正しく誠実に行動する。",ng:"バレなければよいと、ずるをする。",q:"誰（だれ）も見（み）ていない状況（じょうきょう）。良（よ）いのは？",opts:["正（ただ）しく誠実（せいじつ）に行動（こうどう）する","バレなければよい"],correct:0,explain:"倫理的な行動が、ゆるがない信頼を作ります。"},
+ 96:{short:"会社（かいしゃ）全体（ぜんたい）視点（してん）で考（かんが）える",why:"自分の部署だけでなく会社全体を考えると、無駄・無理・ムラに気づき、より良い判断ができます。",ok:"「会社全体にとって良いか」を考えて動く。",ng:"自分の部署・自分の都合だけで判断する。",q:"判断（はんだん）のとき良（よ）いのは？",opts:["会社（かいしゃ）全体（ぜんたい）にとって良（よ）いかを考（かんが）える","自分（じぶん）の部署（ぶしょ）だけ考（かんが）える"],correct:0,explain:"全体視点が、より良い判断を生みます。"},
+ 97:{short:"条件（じょうけん）思考（しこう）で挑（いど）む",why:"「できない理由」でなく「どうすればできるか（条件）」を考える人が、道を切り開きます。",ok:"「どうすればできるか」を条件で考える。",ng:"「無理」「できない」で思考を止める。",q:"難（むずか）しい課題（かだい）に対（たい）して良（よ）いのは？",opts:["どうすればできるかを考（かんが）える","できない理由（りゆう）を探（さが）す"],correct:0,explain:"「どうすればできるか」の思考が、可能性を広げます。"},
+ 98:{short:"職場（しょくば）に前向（まえむ）きな影響（えいきょう）を与（あた）える",why:"あなたの前向きな態度は周りに伝染します。一人の明るさが、職場全体を良くします。",ok:"前向きな言葉・態度で、周りに良い影響を与える。",ng:"不満や愚痴で、周りの空気を悪くする。",q:"職場（しょくば）での良（よ）い在（あ）り方（かた）は？",opts:["前向（まえむ）きな影響（えいきょう）を周（まわ）りに与（あた）える","愚痴（ぐち）で空気（くうき）を悪（わる）くする"],correct:0,explain:"あなたの前向きさが、職場全体を明るくします。"},
+ 99:{short:"社会（しゃかい）貢献（こうけん）意識（いしき）を持（も）つ",why:"自分の仕事が社会や人の役に立っていると意識すると、誇りとやりがいが生まれます。会社のための行動が自分に返る。",ok:"自分の仕事が誰の役に立つかを意識して働く。",ng:"仕事を「お金のためだけ」と考える。",q:"仕事（しごと）への良（よ）い意識（いしき）は？",opts:["社会（しゃかい）や人（ひと）の役（やく）に立（た）つ意識（いしき）を持（も）つ","お金（かね）のためだけと考（かんが）える"],correct:0,explain:"社会貢献の意識が、誇りとやりがいを生みます。"},
+ 100:{short:"世界（せかい）を幸（しあわ）せにする情熱（じょうねつ）を持（も）つ",why:"大きな理想も、身近な人（学生・同僚・企業）を幸せにすることから。その積み重ねが世界を変えます。",ok:"関わる人を幸せにする気持ちを持って働く。",ng:"自分のことだけを考えて働く。",q:"ESUHAIで働（はたら）く者（もの）の最終（さいしゅう）的（てき）な志（こころざし）は？",opts:["関（かか）わる人（ひと）から幸（しあわ）せを広（ひろ）げる","自分（じぶん）のことだけ考（かんが）える"],correct:0,explain:"身近な人を幸せにする情熱が、大きな変化を生みます。"}
+};
+
+/* ============================================================
+   ベトナム語訳（解説：e=結論 w=なぜ ok ng）— AI下書き・要監修
+   ============================================================ */
+const VI={
+ 1:{e:"Chào hỏi phải chủ động trước. Người chủ động được tin tưởng hơn người chờ đợi.",w:"Lời chào là tín hiệu 「Tôi công nhận bạn」. Ở Nhật, ấn tượng đầu tiên được quyết định bởi giọng nói và nét mặt. Người chủ động chào sẽ được tin tưởng ngay.",ok:"Nhìn vào mắt đối phương, chủ động nói trước 「Ohayou gozaimasu!」 một cách vui vẻ.",ng:"Đợi người khác chào rồi mới đáp nhỏ giọng / cúi mặt đi qua."},
+ 2:{e:"Trước tiên hãy đáp 「Hai」 thành tiếng. Lời đáp giúp đối phương yên tâm và tránh sai sót.",w:"Lời đáp rõ ràng là dấu hiệu 「Tôi nghe rồi - Tôi nhận việc」. Không đáp lời, người Nhật sẽ thấy bất an và khó tin tưởng.",ok:"Khi được gọi tên, lập tức đáp 「Hai」 thành tiếng và quay về phía người gọi.",ng:"Chỉ gật đầu im lặng / giả vờ không nghe thấy."},
+ 3:{e:"Đến đúng giờ là đã trễ. Hãy đặt mục tiêu hoàn tất chuẩn bị trước 5 phút.",w:"Ở Nhật, 「đúng giờ = đến trễ」. Đến trước 5 phút và chuẩn bị xong là điều cơ bản của người chuyên nghiệp.",ok:"Đến trước giờ làm/giờ hẹn 5-10 phút, sẵn sàng bắt tay vào việc ngay.",ng:"Đến đúng giờ / đến rồi mới bắt đầu chuẩn bị."},
+ 4:{e:"Giờ vào làm là hiệu lệnh bắt đầu. Ăn uống, chuẩn bị hãy xong trước giờ làm.",w:"Giờ vào làm là 「giờ bắt đầu công việc」. Bắt đầu thay đồ hay ăn uống sau giờ đó là điều không nên ở Nhật. Vào làm = sẵn sàng hành động ngay.",ok:"Thay đồ, ăn sáng, chuẩn bị xong trước giờ làm; tới giờ là bắt đầu việc ngay.",ng:"Sau giờ làm mới ngồi ăn sáng tại bàn / mới bắt đầu thay đồ."},
+ 5:{e:"Tác phong nơi làm việc, 「sạch sẽ gọn gàng」 quan trọng hơn 「thời trang」.",w:"Cảm giác sạch sẽ gắn liền với niềm tin 「người này làm việc cũng cẩn thận」. Cũng là tinh thần hiếu khách.",ok:"Quần áo sạch, tóc gọn, móng tay ngắn, đánh răng, mang khăn tay. Trang phục không quá phô trương.",ng:"Tóc bù xù / quần áo bẩn / mùi nồng / phụ kiện quá lớn."},
+ 6:{e:"Ở Nhật, trước hết hãy xin lỗi thành thật. Biện minh trước sẽ mất niềm tin.",w:"Không chỉ nghĩ trong lòng mà phải nói ra. Người biết cảm ơn và xin lỗi chân thành sẽ được đồng nghiệp tin tưởng lâu dài.",ok:"Được giúp thì nói 「Cảm ơn」, làm sai thì nói 「Xin lỗi」 trước khi giải thích.",ng:"Chỉ nghĩ trong lòng / ngại nên không nói / không xin lỗi mà biện minh trước."},
+ 7:{e:"Lỗi giấu đi sau này sẽ lớn hơn. Sự trung thực bảo vệ niềm tin.",w:"Một lời nói dối nhỏ kéo theo lời nói dối tiếp. Người dám báo cáo lỗi trung thực rốt cuộc lại được tin tưởng.",ok:"Phát hiện lỗi thì báo cáo trung thực ngay. Giữ cả những lời hứa nhỏ.",ng:"Giấu để không bị phát hiện / nói dối qua loa / không làm được mà nói 「làm được」."},
+ 8:{e:"Người biết trân trọng của chung sẽ được tin tưởng.",w:"Đồ dùng, chi phí của công ty là của chung. Người dùng cẩn thận sẽ được xem là làm việc cũng cẩn thận.",ok:"Dùng dụng cụ, máy tính, chi phí công ty cẩn thận như của mình. Tách bạch việc riêng.",ng:"Dùng đồ công ty cẩu thả / dùng vào việc riêng / tiêu xài lãng phí."},
+ 9:{e:"5S là nền tảng công việc. Nơi làm gọn gàng giúp giảm lỗi và tai nạn.",w:"5S (Sàng lọc - Sắp xếp - Sạch sẽ - Săn sóc - Sẵn sàng) là 「chính công việc」 giúp tăng hiệu suất và chất lượng. Dọn dẹp không phải việc vặt.",ok:"Dùng xong để lại đúng vị trí, luôn giữ khu vực quanh mình sạch sẽ.",ng:"Coi 5S là 「việc vặt thừa」 / để bừa bộn mặc kệ."},
+ 10:{e:"Quản lý sức khỏe là trách nhiệm. Nghỉ đột xuất ảnh hưởng công việc của mọi người.",w:"Giữ sức khỏe cũng là một phần công việc. Nghỉ đột xuất gây phiền cho mọi người. Bảo vệ cơ thể mình cũng là trách nhiệm của người chuyên nghiệp.",ok:"Ngủ, ăn điều độ, phòng ngừa (như tránh dầm mưa). Thấy không khỏe thì báo sớm.",ng:"Thức khuya liên tục đến đổ bệnh / cố chịu rồi nghỉ đột xuất."},
+ 11:{e:"Đặt thời hạn giúp sắp xếp ưu tiên và người ở công đoạn sau cũng yên tâm.",w:"Việc không có thời hạn sẽ bị trì hoãn và làm nghẽn người tiếp theo trong dây chuyền. Người tự đặt 「đến khi nào」 sẽ được tin tưởng.",ok:"Nhận việc thì tự quyết 「hoàn thành đến khi nào」 và chia sẻ với mọi người.",ng:"Cứ nghĩ 「khi nào rảnh thì làm」, không đặt thời hạn."},
+ 12:{e:"Hạn giao = lời hứa. Mặc định phải giữ, khó thì báo trước.",w:"Hạn giao là lời hứa với đối phương. Không giữ sẽ mất niềm tin và ảnh hưởng việc sau. Không phải 「đại khái」 mà phải chắc chắn giữ.",ok:"Hạn đã hứa thì nhất định giữ. Khó thì báo sớm để điều chỉnh.",ng:"Nghĩ 「trễ chút cũng không sao」."},
+ 13:{e:"Báo cáo sớm là cách xử lý tốt nhất. Báo càng sớm càng dễ gỡ.",w:"Vấn đề không nằm ở việc trễ, mà ở việc 「trễ mà im lặng」. Báo sớm thì đối phương còn kịp xoay xở.",ok:"Vừa biết có thể trễ là báo ngay, kèm theo phương án xử lý.",ng:"Im lặng đến phút chót rồi tới hạn mới nói 「không làm được」."},
+ 14:{e:"Trực quan hóa giúp giảm sót việc và dễ thống nhất với đối phương.",w:"Kế hoạch chỉ để trong đầu dễ quên và lệch. Viết ra cho thấy được thì dễ khớp nhận thức với người khác.",ok:"Viết việc cần làm và hạn chót ra lịch/danh sách rồi chia sẻ.",ng:"Chỉ quản lý lịch trong đầu."},
+ 15:{e:"Biết mục đích thì chuẩn bị được, cuộc họp ngắn mà chất.",w:"Dự họp mà không biết mục đích là phí thời gian. Xác nhận trước 「họp để làm gì」 sẽ chuẩn bị được và họp có ích.",ok:"Trước họp, xác nhận mục đích, nội dung và vai trò của mình.",ng:"Không biết họp gì, không chuẩn bị mà cứ dự."},
+ 16:{e:"Ý thức giờ kết thúc làm cho thảo luận cô đọng hơn.",w:"Giữ giờ kết thúc khiến ta tập trung gói nội dung trong thời gian. Kéo dài lê thê cướp thời gian của mọi người.",ok:"Ý thức giờ kết thúc, đưa ra kết luận trong thời gian.",ng:"Không để ý thời gian, kéo dài lê thê."},
+ 17:{e:"Sắp ưu tiên giúp những việc thật sự quan trọng không bị trễ.",w:"Không thể làm tất cả cùng lúc. Người biết phân biệt quan trọng - gấp để sắp thứ tự sẽ ra kết quả trong thời gian có hạn.",ok:"Sắp thứ tự theo mức quan trọng và hạn chót, làm việc quan trọng trước.",ng:"Thấy gì làm nấy / chọn việc dễ làm trước."},
+ 18:{e:"Một lời hồi đáp sớm tạo niềm tin. Im lặng khiến đối phương bất an.",w:"Phản hồi sớm thì cả hai cùng tiến việc. Báo cho biết tình hình chính là sự quan tâm tới đối phương.",ok:"Phản hồi liên lạc sớm. Chưa trả lời được thì cũng báo một câu 「Để tôi kiểm tra」.",ng:"Để phản hồi lại sau, bắt đối phương chờ."},
+ 19:{e:"Tích lũy thời gian rảnh nhỏ sẽ tạo nên khác biệt.",w:"Thời gian ngắn như lúc chờ, lúc di chuyển, gom lại cũng nhiều. Người biết dùng để chuẩn bị, ôn tập sẽ tiến bộ.",ok:"Vài phút rảnh dùng để chuẩn bị việc sau, sắp xếp ghi chú, học.",ng:"Để thời gian rảnh trôi qua bằng việc lướt điện thoại."},
+ 20:{e:"Ý thức xong việc trong giờ làm tăng hiệu suất.",w:"Mặc định tăng ca thì sẽ không nghĩ cách làm xong trong giờ. Tập trung làm xong trong giờ mới là chuyên nghiệp.",ok:"Tập trung làm với tiền đề xong trong giờ, làm hiệu quả.",ng:"Nghĩ 「tăng ca là được」 rồi ban ngày làm lề mề."},
+ 21:{e:"Hou-Ren-Sou phải chủ động. Tin xấu càng báo sớm thiệt hại càng nhỏ.",w:"Tin xấu càng phải báo sớm. Chủ động Báo cáo - Liên lạc - Bàn bạc giúp đối phương quyết định nhanh và giảm lỗi.",ok:"Tiến độ hay vấn đề, hãy chủ động báo trước khi bị hỏi.",ng:"Im lặng đến khi bị hỏi / để tin xấu lại sau."},
+ 22:{e:"Nói kết luận trước thì đối phương quyết định được ngay.",w:"Cấp trên người Nhật muốn biết 「rốt cuộc thế nào」 trước tiên. Kết luận → lý do là cách nói của người giỏi.",ok:"Nói kết luận trước: 「Tài liệu mai xong. Có 2 lý do」.",ng:"Kể dài dòng diễn biến, mãi không ra kết luận."},
+ 23:{e:"Tách bạch sẽ giúp đối phương phán đoán đúng.",w:"Sự thật (việc đã xảy ra) và ý kiến (suy nghĩ của mình) lẫn lộn sẽ gây hiểu nhầm. Nhất là khi có phiên dịch càng dễ rối.",ok:"Nói tách bạch: 「Sự thật là ~. Ý kiến của tôi là ~」.",ng:"Trộn lẫn sự thật và suy đoán của mình khi nói."},
+ 24:{e:"Nhắc lại giúp tránh lệch. Rất hiệu quả khi trao đổi bằng ngoại ngữ.",w:"Xác nhận 「~ đúng không ạ, tôi rõ rồi」 giúp tránh nghe nhầm và hiểu lệch.",ok:"Nhận chỉ thị thì nhắc lại ý chính để xác nhận.",ng:"Tưởng đã hiểu rồi bắt tay làm mà không xác nhận."},
+ 25:{e:"Ghi chú chắc hơn trí nhớ. Tránh hỏi đi hỏi lại cùng một câu.",w:"Ghi chép hơn ghi nhớ. Người ghi chú không hỏi lại cùng việc và được tin tưởng.",ok:"Khi được dạy thì dừng tay ghi chú, viết để sau xem lại được.",ng:"Nói 「nhớ rồi」 mà không ghi."},
+ 26:{e:"Hỏi sớm giúp tránh sai lầm lớn.",w:"Cứ làm khi chưa hiểu sẽ thành lỗi lớn. Hỏi sớm thì giải quyết sớm.",ok:"Chỗ không hiểu thì hỏi ngay tại chỗ hoặc hỏi sớm.",ng:"Không hiểu mà tự phán đoán rồi làm."},
+ 27:{e:"Tin xấu càng sớm càng xử lý được. Giấu là tệ nhất.",w:"Tin xấu càng mất thời gian để tới người có quyền quyết định. Báo trước thì còn kịp ra tay.",ok:"Ưu tiên báo tin xấu, sự cố sớm và chính xác.",ng:"Báo tin tốt trước, để tin xấu lại sau / giấu đi."},
+ 28:{e:"Có sẵn phương án thì chỉ cần bàn một lần là chốt.",w:"Chỉ báo tình hình thì phải trao đổi nhiều lần. Mang theo 「tôi nghĩ thế này」 khi bàn sẽ nhanh hơn.",ok:"Đề xuất kèm phương án: 「Tình hình là ~. Tôi muốn ~, anh thấy sao ạ?」.",ng:"Chỉ báo tình hình rồi hỏi 「giờ phải làm sao?」 là xong."},
+ 29:{e:"Nghe đến hết giúp tránh lỗi và hiểu nhầm.",w:"Ngắt lời giữa chừng dễ gây hiểu nhầm, thất lễ. Nghe hết rồi mới hỏi là điều cơ bản.",ok:"Nghe đến khi đối phương nói xong, không hiểu thì hỏi sau cùng.",ng:"Chen ngang / tưởng hiểu rồi bắt tay làm."},
+ 30:{e:"Tiêu đề cụ thể giúp đối phương hiểu và xử lý ngay.",w:"Tiêu đề cụ thể giúp nhìn là biết việc, tiết kiệm thời gian cho đối phương.",ok:"Viết cụ thể như 「[Nhờ] Tài liệu ~ trước ngày mai」.",ng:"Tiêu đề chung chung như 「Chào anh」 「Một chút」 không rõ nội dung."},
+ 31:{e:"Người nghĩ theo hướng tự trách sẽ trưởng thành. Đổ lỗi thì không gì thay đổi.",w:"Khi có vấn đề, đổ lỗi cho người khác thì ngừng trưởng thành. Trước hết nghĩ 「mình có thể làm gì」 sẽ tiến bộ.",ok:"Trước tiên nghĩ 「mình có thể làm gì khác không」.",ng:"Chỉ kết luận 「tại người kia」 「tại hoàn cảnh」."},
+ 32:{e:"Người nói về cải thiện tiếp theo, thay vì biện minh, sẽ được tin.",w:"Biện minh làm giảm niềm tin và chặn cải thiện. Thừa nhận sự thật rồi nghĩ bước sau mới tiến lên được.",ok:"Thừa nhận điều chưa làm được và nói 「Lần sau tôi sẽ làm thế này」.",ng:"Liệt kê lý do 「bận quá」 「không nghe nói」."},
+ 33:{e:"Thái độ làm tới cùng tạo niềm tin.",w:"Bỏ dở giữa chừng thì ai đó phải dọn hậu quả. Người làm việc được giao tới cùng sẽ được tin.",ok:"Việc đã nhận thì có trách nhiệm làm tới khi hoàn tất.",ng:"Bỏ mặc giữa chừng / làm nửa vời rồi đẩy cho người khác."},
+ 34:{e:"Thừa nhận điểm yếu là điểm xuất phát của trưởng thành.",w:"Thừa nhận mình chưa làm được cần dũng khí, nhưng trưởng thành chỉ bắt đầu từ đó.",ok:"Thẳng thắn thừa nhận điểm yếu và nghĩ 「làm sao để tốt hơn」.",ng:"Chưa làm được mà cứ ngỡ 「mình làm được」."},
+ 35:{e:"Người học từ thất bại sẽ trưởng thành nhanh nhất.",w:"Thất bại là tài sản. Nghĩ 「vì sao thất bại」 sẽ có ích cho lần sau. Chỉ buồn thì không gì thay đổi.",ok:"Phân tích nguyên nhân thất bại và biến thành bài học cho lần sau.",ng:"Chỉ buồn / lặp lại cùng một thất bại."},
+ 36:{e:"Người hiểu được ý đồ sẽ vượt được kỳ vọng.",w:"Không chỉ bề mặt câu chữ, mà nghĩ 「thật ra họ muốn gì」 sẽ đáp ứng được kỳ vọng.",ok:"Nghĩ bối cảnh, mục đích của chỉ thị và đưa đúng thứ đối phương thật sự cần.",ng:"Chỉ làm đúng câu chữ theo nghĩa đen."},
+ 37:{e:"Người nghĩ theo kết quả sẽ tạo ra giá trị.",w:"Không phải 「đã làm chưa」 mà 「có ra kết quả không」. Không chỉ làm cho xong mà xét đã đạt mục đích chưa.",ok:"Ý thức 「việc này để làm gì?」 và hướng tới kết quả.",ng:"Chỉ làm xong việc được giao là thỏa mãn."},
+ 38:{e:"Thái độ ổn định là điều kiện của người chuyên nghiệp đáng tin.",w:"Thái độ thay đổi theo tâm trạng khiến mọi người dè chừng, làm rối nhóm. Người chuyên nghiệp không mang cảm xúc vào công việc.",ok:"Tách cảm xúc cá nhân khỏi công việc, giữ thái độ ổn định.",ng:"Để cáu gắt lộ ra thái độ hay lời nói."},
+ 39:{e:"Bàn bạc sớm giúp tránh gây phiền cho mọi người.",w:"Ôm quá nhiều đến mức không báo cáo giữa chừng được, cuối cùng gây phiền lớn. Biết giới hạn của mình và bàn sớm.",ok:"Sắp quá tải thì sớm 「bàn bạc」 để điều chỉnh.",ng:"Ôm hết một mình, tới sát hạn mới nói 「không làm được」."},
+ 40:{e:"Tự trách không phải tự dằn vặt, mà là động lực trưởng thành.",w:"Người tin 「mình có thể thay đổi được」 sẽ tiến bộ. Tự trách không phải tự dằn vặt mà là biến thành sức mạnh.",ok:"Xem vấn đề là 「cơ hội để mình trưởng thành」.",ng:"Nghĩ 「không liên quan đến mình」, không có ý thức người trong cuộc."},
+ 41:{e:"Nhìn theo cơ chế thì chặn được tái phát tận gốc.",w:"Đổ lỗi cho cá nhân thì lỗi vẫn tái phát. Sửa 「cơ chế」 thì ai làm cũng phòng được.",ok:"Phòng tái phát bằng cơ chế, quy trình chứ không phải bằng con người.",ng:"Chỉ kết luận 「tại người đó」 rồi thôi."},
+ 42:{e:"Tư duy 「tại sao - tại sao」 giúp thấy nguyên nhân thật.",w:"Lặp lại 「tại sao?」 sẽ chạm tới nguyên nhân thật (nguyên nhân gốc) chứ không phải bề mặt.",ok:"Đào sâu nguyên nhân bằng cách hỏi 「tại sao?」 khoảng 5 lần.",ng:"Thỏa mãn với nguyên nhân thấy đầu tiên."},
+ 43:{e:"Tuân thủ rồi mới đề xuất cải tiến. Đó mới là KAIZEN đúng.",w:"Trước hết tuân thủ quy tắc, rồi đề xuất 「tại sao? có thể tốt hơn không?」. Giữ rồi mới đổi.",ok:"Vừa giữ chuẩn, vừa đề xuất khi thấy điểm cải tiến.",ng:"Tự ý đổi theo cách riêng / chỉ than phiền mà không đề xuất."},
+ 44:{e:"Chia sẻ Hiyari-Hatto (suýt sự cố) giúp ngăn tai nạn lớn.",w:"Chia sẻ 「suýt nguy hiểm」 giúp ngăn trước tai nạn, lỗi lớn. Giấu đi thì lần sau có người gặp nạn.",ok:"Không giấu chuyện suýt nguy hiểm, chia sẻ với cả nhóm.",ng:"Nghĩ 「chưa gây hậu quả」 rồi im lặng."},
+ 45:{e:"Chuẩn hóa thành công sẽ nâng sức mạnh cả nhóm.",w:"Đừng biến cách làm tốt thành 「bí kíp riêng」; biến thành cách ai cũng làm được thì cả nhóm mạnh lên.",ok:"Biến cách làm tốt thành quy trình và chia sẻ cho mọi người.",ng:"Giữ bí quyết thành công cho riêng mình."},
+ 46:{e:"Sáng kiến cải tiến tạo ra thời gian và chất lượng.",w:"Đừng chịu đựng 「khó làm」; sáng kiến làm cho dễ hơn sẽ tăng năng suất.",ok:"Tìm việc rườm rà, lãng phí và nghĩ cách cải thiện.",ng:"Cứ duy trì cách kém hiệu quả vì 「xưa giờ vẫn vậy」."},
+ 47:{e:"Người dùng thành thạo công cụ mới sẽ tiến xa.",w:"Dùng tốt công cụ mới thì việc nhanh và chính xác hơn. Quan trọng là nghĩ cách dùng.",ok:"Học AI và công cụ mới, nghĩ cách áp dụng vào việc.",ng:"Tránh công cụ mới vì 「nghe khó」."},
+ 48:{e:"Sự linh hoạt ứng phó với thay đổi sẽ thành thế mạnh.",w:"Tình huống và quy tắc luôn đổi. Người ứng phó nhanh sẽ được tin trong thời đại biến động.",ok:"Chấp nhận thay đổi và linh hoạt đổi cách làm.",ng:"Ghét thay đổi, cứ 「trước giờ vẫn thế」."},
+ 49:{e:"Phòng bằng cơ chế thì dù người đổi cũng không tái phát.",w:"Chỉ 「sẽ cẩn thận」 thì vẫn tái phát. Phòng bằng cơ chế thì không cần cố cũng phòng được.",ok:"Sau lỗi, tạo cơ chế (kiểm tra, quy trình) để không tái phát.",ng:"Chỉ dừng ở 「lần sau cẩn thận」."},
+ 50:{e:"Những cải tiến nhỏ mỗi ngày (KAIZEN) tạo nên trưởng thành lớn.",w:"Không cần cải cách lớn, tích lũy mỗi ngày tốt hơn một chút sẽ tạo khác biệt lớn.",ok:"Mỗi ngày ý thức 「tốt hơn hôm qua một chút」 và sáng kiến.",ng:"Dừng lại với 「cứ thế này là được」."},
+ 51:{e:"Bàn làm việc gọn gàng tạo cả thời gian lẫn niềm tin.",w:"Thời gian tìm đồ là lãng phí. Lấy được ngay khi cần tạo hiệu suất và niềm tin. Cũng quan trọng cho bảo mật thông tin cá nhân.",ok:"Để đồ cần thiết đúng vị trí, lấy ra được ngay.",ng:"Giấy tờ chất đống, tìm đồ mất thời gian."},
+ 52:{e:"Sắp xếp trong máy tính cũng là một phần của 5S.",w:"File bừa bộn làm tăng thời gian tìm và sai sót. Sắp thư mục để tìm được ngay.",ok:"Sắp file theo thư mục và tên dễ hiểu.",ng:"File vương vãi khắp màn hình desktop."},
+ 53:{e:"Người biết trân trọng nơi chung sẽ được tin tưởng.",w:"Nơi mọi người dùng thì giữ sạch vì người sau. Cũng ngăn rò rỉ ngoài ý muốn như thông tin cá nhân trên giấy nháp.",ok:"Dùng xong khu vực chung thì dọn sạch để người sau dễ dùng.",ng:"Dùng xong để bừa rồi rời đi."},
+ 54:{e:"Dù rời chỗ ngắn, khóa màn hình là điều cơ bản để giữ thông tin.",w:"Màn hình lúc vắng mặt làm rò rỉ thông tin. Trước khi yêu cầu học sinh quản lý thông tin, mình phải làm gương.",ok:"Rời chỗ là nhất định khóa màn hình.",ng:"Để màn hình mở rồi rời đi."},
+ 55:{e:"Quản lý mật khẩu là tuyến đầu giữ thông tin.",w:"Mật khẩu rò rỉ gây thiệt hại lớn. Dùng đi dùng lại hay dán giấy nhớ đều nguy hiểm.",ok:"Dùng mật khẩu khó đoán và quản lý an toàn.",ng:"Mật khẩu đơn giản / dán giấy nhớ / dùng chung một mật khẩu."},
+ 56:{e:"Ngăn rò rỉ từ câu chuyện vô tình cũng là công việc.",w:"Câu chuyện trên tàu, quán cà phê có thể làm rò rỉ thông tin. Không nói chuyện thông tin công ty, khách hàng ở bên ngoài.",ok:"Không nói thông tin mật, cá nhân ở ngoài công ty.",ng:"Nói chuyện công việc cụ thể ở quán ăn, trên tàu."},
+ 57:{e:"Sao lưu sẽ cứu bạn khi có sự cố.",w:"Dữ liệu có thể mất đột ngột. Có sao lưu thì mất vẫn khôi phục được.",ok:"Sao lưu định kỳ dữ liệu quan trọng.",ng:"Chỉ lưu một nơi, không sao lưu."},
+ 58:{e:"Thái độ trân trọng vật dụng dẫn tới niềm tin.",w:"Vật dụng công ty là tài sản chung. Dùng đúng và cẩn thận thì bền lâu, giảm chi phí.",ok:"Dùng vật dụng đúng cách, cẩn thận và để lại đúng chỗ.",ng:"Dùng thô bạo / coi như của riêng / không trả về chỗ cũ."},
+ 59:{e:"Tiêu hủy chắc chắn giúp ngăn rò rỉ thông tin.",w:"Vứt thẳng giấy tờ có thông tin cá nhân sẽ gây rò rỉ. Hãy hủy chắc chắn bằng máy hủy giấy.",ok:"Giấy tờ mật hủy chắc chắn bằng máy hủy giấy.",ng:"Vứt thẳng giấy có thông tin cá nhân vào sọt / dùng làm giấy nháp."},
+ 60:{e:"Một lần đăng có thể thành chuyện lớn. Hãy dùng SNS thận trọng.",w:"Đăng SNS tùy tiện có thể làm rò rỉ thông tin công ty, cá nhân và gây rắc rối. Hãy nghĩ một lần trước khi đăng.",ok:"Không đăng thông tin công việc, khách hàng, đồng nghiệp lên SNS. Kiểm tra trước khi đăng.",ng:"Tùy tiện đăng ảnh nơi làm việc, chuyện công việc."},
+ 61:{e:"Người trong công ty = khách hàng nội bộ. Sự cẩn thận làm mạnh cả tập thể.",w:"Đồng nghiệp, bộ phận khác cũng như 「khách hàng」. Tôn trọng đối phương khi giao việc thì cả guồng máy trơn tru.",ok:"Với người trong công ty cũng cư xử cẩn thận như với khách.",ng:"Đối xử cẩu thả vì 「người trong công ty mà」."},
+ 62:{e:"Sự quan tâm tới công đoạn sau nâng chất lượng toàn bộ.",w:"Để người nhận tiếp sau mình (công đoạn sau) không gặp khó. Hãy nghĩ cả dòng chảy công việc.",ok:"Hoàn thiện sao cho người nhận tiếp theo dễ dùng.",ng:"Chỉ cần xong phần mình, không nghĩ tới người sau."},
+ 63:{e:"Người biết dìu dắt đàn em sẽ trưởng thành thành lãnh đạo.",w:"Truyền lại điều mình học cho đàn em thì nhóm mạnh lên và bản thân cũng hiểu sâu hơn.",ok:"Tận tình chỉ dạy và hỗ trợ đàn em trưởng thành.",ng:"Bỏ mặc đàn em vì 「không phải việc của mình」."},
+ 64:{e:"Nhóm biết khen nhau sẽ tạo ra kết quả.",w:"Nhóm biết thật lòng vui cho thành công của đồng đội là nhóm mạnh. Khen ngợi thay vì ghen tị tạo bầu không khí tốt.",ok:"Đồng đội làm tốt thì thật lòng khen 「giỏi thật」.",ng:"Ghen tị / phớt lờ thành công của đồng đội."},
+ 65:{e:"Nói xấu phá vỡ tập thể. Niềm tin mất chỉ trong một lần.",w:"Nói xấu sau lưng phá vỡ niềm tin của nhóm. Điều muốn nói thì nói thẳng với người đó một cách xây dựng.",ok:"Bất mãn thì không nói sau lưng mà nói xây dựng với người đó hoặc cấp trên.",ng:"Nói xấu sau lưng nơi không có người đó."},
+ 66:{e:"Tương trợ nâng kết quả của cả nhóm.",w:"Xong việc sớm thì giúp người đang khó khăn. Tương trợ nâng hiệu suất cả công ty.",ok:"Rảnh tay thì hỏi 「có gì cần giúp không?」.",ng:"Xong việc mình thì mặc kệ xung quanh."},
+ 67:{e:"Tri thức được chia sẻ trở thành sức mạnh của nhóm.",w:"Thông tin từ phỏng vấn, gặp gỡ là tài sản công ty. Không giữ riêng mà chia sẻ thì mọi người cùng tiến.",ok:"Biến tri thức, bí quyết thu được thành tài liệu và chia sẻ cho nhóm.",ng:"Giữ thông tin mình thu được cho riêng mình."},
+ 68:{e:"Nhóm tôn trọng đa dạng sẽ mạnh và linh hoạt.",w:"Tôn trọng đồng đội khác nước, văn hóa, suy nghĩ sẽ tạo nhóm mạnh. Khác biệt không phải điểm yếu mà là thế mạnh.",ok:"Tôn trọng suy nghĩ, văn hóa khác mình và có tinh thần học hỏi.",ng:"Chỉ cho cách làm, lẽ thường của mình là đúng."},
+ 69:{e:"Lời cảm ơn tạo nên một nhóm tốt.",w:"Được giúp thì cảm ơn bằng lời. Nhóm có sự cảm ơn lan tỏa thì cả không khí lẫn kết quả đều tốt.",ok:"Dù việc nhỏ cũng nói 「cảm ơn」 thành lời.",ng:"Coi việc được giúp là đương nhiên, không cảm ơn."},
+ 70:{e:"Người xem mục tiêu nhóm là việc của mình sẽ được tin tưởng.",w:"Không chỉ 「phần mình」 mà người theo đuổi mục tiêu cả nhóm như mục tiêu của mình sẽ giúp nhóm chiến thắng.",ok:"Xem mục tiêu, kết quả của nhóm là việc của chính mình.",ng:"Thờ ơ với kết quả nhóm, nghĩ 「việc mình xong rồi」."},
+ 71:{e:"Ghi nhớ chính xác là bước đầu của niềm tin.",w:"Nhớ chính xác tên, tên công ty khách là điều cơ bản của niềm tin. Viết tắt hay nhớ áng chừng là thất lễ.",ok:"Xác nhận và nhớ chính xác tên gọi, thông tin chính thức của khách.",ng:"Viết tắt tên công ty hay nhớ theo cảm tính."},
+ 72:{e:"Người biết đoán trước sẽ vượt được kỳ vọng.",w:"Nhận ra và lo trước điều khách bận tâm trước khi được nói sẽ tăng mạnh niềm tin và sự hài lòng.",ok:"Nghĩ xem khách có thể gặp khó ở đâu và chuẩn bị trước.",ng:"Chỉ xử lý đúng việc được nói."},
+ 73:{e:"Tích lũy giá trị cộng thêm nhỏ tạo nên khác biệt.",w:"Thêm 「+α」 giá trị vào việc được giao thì sẽ trở thành người luôn được chọn.",ok:"Với yêu cầu, thêm một thông tin hay đề xuất hữu ích.",ng:"Chỉ làm tối thiểu đúng như được nói."},
+ 74:{e:"Vừa tự tin vừa khiêm tốn tạo nên người đáng tin.",w:"Tự tin thì được nhờ cậy, khiêm tốn thì học được. Người có cả hai sẽ được tin lâu dài.",ok:"Tự tin vào công việc nhưng không quên sự khiêm tốn để học.",ng:"Kiêu ngạo / thiếu tự tin, không đáng cậy."},
+ 75:{e:"Hiểu ngành tạo ra đề xuất chính xác và niềm tin.",w:"Biết ngành của khách thì đề xuất được chính xác và được tin.",ok:"Học và hiểu sâu về ngành, công việc của khách.",ng:"Chỉ muốn biết phạm vi phụ trách của mình."},
+ 76:{e:"Khoảnh khắc vượt kỳ vọng sinh ra cảm động và niềm tin.",w:"Đừng thỏa mãn với 「đúng kỳ vọng」; vượt một chút sẽ tạo cảm động và biến họ thành người hâm mộ. Đừng tự định giới hạn của đối phương.",ok:"Sáng kiến để vượt kỳ vọng của đối phương một bước.",ng:"Tự định giới hạn 「chừng này là được」."},
+ 77:{e:"Xử lý nhanh và chân thành biến nguy thành cơ.",w:"Khiếu nại là cơ hội lấy lại niềm tin. Xử lý chân thành và nhanh thì quan hệ còn sâu hơn.",ok:"Với khiếu nại, không biện minh, xử lý chân thành và nhanh.",ng:"Để lại sau / biện minh / giấu đi."},
+ 78:{e:"Thái độ của bạn trở thành đánh giá cho cả công ty.",w:"Cách cư xử của bạn tạo ấn tượng về công ty. Mỗi người là 「bộ mặt công ty」.",ok:"Luôn cư xử cẩn thận như đại diện công ty, ví dụ khi tiếp khách.",ng:"Lơi lỏng vì nghĩ 「một mình mình thì sao」."},
+ 79:{e:"Người mong khách thành công sẽ được chọn lâu dài.",w:"Ưu tiên 「khách thành công」 hơn sự tiện lợi của mình thì sẽ được tin và chọn lâu dài.",ok:"Ưu tiên thành công của khách hơn sự tiện cho mình.",ng:"Ưu tiên sự dễ dàng, tiện lợi của bản thân."},
+ 80:{e:"Quan hệ lâu dài trở thành tài sản lớn nhất.",w:"Quan hệ tin cậy lâu dài tạo giá trị lớn hơn lợi ích trước mắt.",ok:"Trân trọng quan hệ tin cậy lâu dài thay vì lợi trước mắt.",ng:"Chỉ ưu tiên lợi ích nhất thời."},
+ 81:{e:"Người học không ngừng sẽ luôn nâng cao giá trị.",w:"Càng nhiều kiến thức càng làm được nhiều, khách càng hài lòng. Ngừng học thì ngừng trưởng thành.",ok:"Học liên tục kiến thức chuyên môn của công việc mình.",ng:"Thỏa mãn với kiến thức hiện có, không học thêm."},
+ 82:{e:"Người biết tận dụng phê bình sẽ tiến bộ nhất.",w:"Phê bình, góp ý là gợi ý để trưởng thành. Không nản mà biết dùng để cải thiện sẽ tiến bộ.",ok:"Đón nhận góp ý như 「gợi ý để trưởng thành」 và cải thiện.",ng:"Tức giận với phê bình / chỉ buồn rồi thôi."},
+ 83:{e:"Hiểu bản thân là điểm xuất phát của trưởng thành hiệu quả.",w:"Biết điểm mạnh - yếu thì phát huy điểm mạnh, bù điểm yếu. Hiểu bản thân là nền của trưởng thành.",ok:"Nắm đúng điểm giỏi - dở của mình.",ng:"Không chịu nhìn mình một cách khách quan."},
+ 84:{e:"Thói quen xoay vòng PDCA tạo trưởng thành vững chắc.",w:"Xoay Kế hoạch(P)→Thực hiện(D)→Nhìn lại(C)→Cải thiện(A) thì chắc chắn trưởng thành. 「Làm cho xong」 thì không tiến.",ok:"Sau khi lên kế hoạch và làm, nhất định nhìn lại để dùng cho lần sau.",ng:"Làm xong là thôi, không nhìn lại."},
+ 85:{e:"Nâng năng lực ngôn ngữ mở rộng phạm vi việc và niềm tin.",w:"Năng lực ngôn ngữ như tiếng Nhật càng cao thì truyền đạt càng chính xác, việc làm được càng rộng.",ok:"Mỗi ngày rèn tiếng Nhật và khả năng truyền đạt.",ng:"Bỏ cuộc với 「nói hiểu là được」."},
+ 86:{e:"Quan tâm xã hội giúp hiểu sâu hơn về công việc.",w:"Biết chuyển động của xã hội thì hiểu bối cảnh công việc và mở rộng tầm nhìn.",ok:"Quan tâm tới tin tức và chuyển động xã hội.",ng:"Chỉ quan tâm những gì quanh mình."},
+ 87:{e:"Hình mẫu trở thành kim chỉ nam cho trưởng thành.",w:"Có người làm mục tiêu thì nâng được bản thân qua 「nếu là người đó sẽ làm sao」.",ok:"Tìm người đáng kính để học và làm mục tiêu.",ng:"Không có hình mẫu, làm việc một cách mơ hồ."},
+ 88:{e:"Người tự vẽ sự nghiệp sẽ chọn được tương lai.",w:"Không 「phó mặc cho công ty」, người tự vẽ hình ảnh mình muốn và lập kế hoạch sẽ có sự nghiệp như mong muốn.",ok:"Nghĩ hình ảnh tương lai muốn trở thành và lập kế hoạch cho hành động hiện tại.",ng:"Làm theo lời bảo, không nghĩ tới tương lai."},
+ 89:{e:"Người tiếp cận công nghệ mới sẽ mạnh trong thời đại tới.",w:"Tiếp xúc công nghệ mới và AI thì ứng phó được với thay đổi và làm việc hiệu quả hơn.",ok:"Chủ động tiếp cận, thử công nghệ và công cụ mới.",ng:"Tránh cái mới vì 「mình không làm được đâu」."},
+ 90:{e:"Người học không ngừng sẽ luôn được cần đến giữa thay đổi.",w:"Nhu cầu doanh nghiệp luôn đổi. Chỉ người không ngừng học mới luôn được cần đến.",ok:"Giữ tinh thần học hỏi không ngừng ở mọi mặt.",ng:"Dừng lại với 「học đủ rồi」."},
+ 91:{e:"Hiểu nguồn gốc lương sẽ thay đổi ý nghĩa của công việc.",w:"Lương sinh ra từ giá trị công ty nhận được từ khách. Nâng sự hài lòng của khách cũng dẫn tới lương của mình.",ok:"Làm việc với hiểu biết 「lương sinh ra từ sự hài lòng của khách」.",ng:"Coi lương là 「thứ công ty đương nhiên trả」."},
+ 92:{e:"Người ý thức năng suất theo thời gian sẽ ra kết quả.",w:"Ý thức tạo nhiều giá trị trong cùng thời gian giúp loại bỏ lãng phí, quá tải, thiếu đồng đều. Có ý thức chi phí cả với thời gian.",ok:"Ý thức 「trong thời gian này tạo được bao nhiêu giá trị」.",ng:"Làm việc lề mề, không để ý thời gian."},
+ 93:{e:"Khi tầm nhìn gắn với hành động, công việc có ý nghĩa.",w:"Gắn hướng đi (tầm nhìn) của công ty với công việc của mình thì việc thường ngày có ý nghĩa.",ok:"Hiểu tầm nhìn công ty và đưa vào hành động của mình.",ng:"Chỉ làm việc trước mắt, không liên hệ với hướng đi của công ty."},
+ 94:{e:"Người biết tận hưởng khó khăn sẽ trưởng thành lớn.",w:"Khó khăn là cơ hội trưởng thành. Người xem là 「thú vị」 hơn 「vất vả」 sẽ vượt qua bức tường và tiến xa.",ok:"Xem tình huống khó là 「cơ hội trưởng thành」 một cách tích cực.",ng:"Chỉ thấy 「mệt」 rồi tránh né khó khăn."},
+ 95:{e:"Hành xử có đạo đức tạo nên niềm tin không lay chuyển.",w:"Dù không ai nhìn cũng hành xử đúng. Đạo đức là nền của niềm tin, đổ một lần là không lấy lại được.",ok:"Dù không ai nhìn cũng hành xử đúng và chân thành.",ng:"Gian dối khi nghĩ 「không bị phát hiện là được」."},
+ 96:{e:"Tầm nhìn toàn cục tạo ra phán đoán tốt hơn.",w:"Nghĩ cho cả công ty chứ không chỉ bộ phận mình thì nhận ra lãng phí, quá tải, thiếu đồng đều và phán đoán tốt hơn.",ok:"Hành động trên cơ sở nghĩ 「có tốt cho cả công ty không」.",ng:"Chỉ phán đoán theo bộ phận, lợi ích của mình."},
+ 97:{e:"Tư duy 「làm sao để được」 mở rộng khả năng.",w:"Người nghĩ 「làm sao để được (điều kiện)」 thay vì 「lý do không làm được」 sẽ mở ra con đường.",ok:"Nghĩ 「làm sao để được」 theo hướng điều kiện.",ng:"Dừng suy nghĩ ở 「không thể」 「không làm được」."},
+ 98:{e:"Sự tích cực của bạn làm sáng cả nơi làm việc.",w:"Thái độ tích cực của bạn lan sang xung quanh. Sự vui vẻ của một người làm tốt cả tập thể.",ok:"Bằng lời nói, thái độ tích cực, tạo ảnh hưởng tốt cho xung quanh.",ng:"Làm xấu bầu không khí bằng bất mãn, than vãn."},
+ 99:{e:"Ý thức cống hiến xã hội sinh ra niềm tự hào và động lực.",w:"Ý thức việc mình có ích cho xã hội, cho người khác sẽ sinh ra niềm tự hào và động lực. Hành động vì công ty sẽ quay lại với chính mình.",ok:"Làm việc với ý thức việc mình có ích cho ai.",ng:"Coi công việc 「chỉ để kiếm tiền」."},
+ 100:{e:"Đam mê làm người quanh ta hạnh phúc sẽ tạo nên thay đổi lớn.",w:"Lý tưởng lớn cũng bắt đầu từ việc làm những người gần gũi (học sinh, đồng nghiệp, doanh nghiệp) hạnh phúc. Tích lũy điều đó sẽ thay đổi thế giới.",ok:"Làm việc với tâm thế làm những người liên quan hạnh phúc.",ng:"Chỉ nghĩ cho riêng mình khi làm việc."}
+};
+
+/* ============================================================
+   状態管理
+   ============================================================ */
+const KEY="atarimae100_v04";
+const LV_TITLES=["新人","見習い","一人前","頼れる先輩","リーダー","プロ","達人","名人"];
+const PTS_PER_LV=100;
+const todayStr=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const dayDiff=(a,b)=>{if(!a||!b)return 0;return Math.round((new Date(b)-new Date(a))/86400000)};
+
+function load(){
+  let s=null; try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+  if(!s) s={points:0,streak:0,lastActive:null,understood:{},tries:{},firstTry:{},practice:{}};
+  s.understood=s.understood||{}; s.tries=s.tries||{}; s.firstTry=s.firstTry||{}; s.practice=s.practice||{};
+  return s;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+let state=load();
+let TAB="learn";
+let learnCat=null;   // 「まなぶ」で表示中のカテゴリ（自動で次に進めない）
+
+/* 連続日数：活動があった日に加算 */
+function touchToday(){
+  const t=todayStr();
+  if(state.lastActive===t) return;
+  const gap=dayDiff(state.lastActive,t);
+  if(state.lastActive===null||gap===1) state.streak=(state.streak||0)+1;
+  else state.streak=1;
+  state.lastActive=t;
+}
+function addPoints(p){ touchToday(); const before=lvOf(state.points); state.points+=p; save();
+  const after=lvOf(state.points); if(after>before) setTimeout(()=>toast("🎉 レベルアップ！ "+LV_TITLES[Math.min(after-1,LV_TITLES.length-1)]),700);
+}
+const lvOf=(p)=>Math.floor(p/PTS_PER_LV)+1;
+
+/* カテゴリ：理解済み数 */
+const catItems=(c)=>BASE.filter(x=>x.cat===c);
+const catUnderstood=(c)=>catItems(c).filter(x=>state.understood[x.no]).length;
+const catHasContent=(c)=>catItems(c).some(x=>CONTENT[x.no]);
+const catCleared=(c)=>catItems(c).length>0 && catUnderstood(c)===catItems(c).length;
+/* 開放：cat0は常時。直前カテゴリがクリアで開放 */
+function isOpen(c){ if(c===0)return true; return catCleared(c-1); }
+
+/* ============================================================
+   描画
+   ============================================================ */
+function escapeHtml(s){return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+function escapeAttr(s){return (s||"").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
+const disp=(it)=>CONTENT[it.no]?CONTENT[it.no].short:(it.title.length>26?it.title.slice(0,25)+"…":it.title);
+
+function renderHeader(){
+  const lv=lvOf(state.points);
+  document.getElementById("lv-n").textContent=lv;
+  document.getElementById("lv-title").textContent=LV_TITLES[Math.min(lv-1,LV_TITLES.length-1)];
+  document.getElementById("lv-pts").textContent=state.points+" pt（次のレベルまで "+(PTS_PER_LV-(state.points%PTS_PER_LV))+"）";
+  document.getElementById("lv-bar").style.width=((state.points%PTS_PER_LV)/PTS_PER_LV*100)+"%";
+  document.getElementById("lv-streak").textContent=state.streak||0;
+}
+
+/* ---- まなぶ（クイズ） ---- */
+function initLearnCat(){
+  for(let c=0;c<CATS.length;c++){ if(isOpen(c) && !catCleared(c)) return c; }
+  let last=0; for(let c=0;c<CATS.length;c++) if(isOpen(c)) last=c; return last;
+}
+function renderLearn(){
+  const v=document.getElementById("view-learn"); v.innerHTML="";
+  if(learnCat===null || !isOpen(learnCat)) learnCat=initLearnCat();
+  const c=learnCat; const items=catItems(c);
+
+  const lead=document.createElement("div"); lead.className="lead";
+  lead.innerHTML="クイズに答えて『当たり前』を理解しよう。正解でポイント獲得＋解説が読めます。<b>出国前の予習</b>に最適。";
+  v.appendChild(lead);
+
+  // 完了サマリー（10問クリア時に最上部へ）
+  if(catCleared(c)){
+    const total=items.length;
+    const firstTry=items.filter(x=>state.firstTry[x.no]).length;
+    const gained=firstTry*10+(total-firstTry)*3;
+    const hasNext=c+1<CATS.length;
+    const res=document.createElement("div"); res.className="result";
+    res.innerHTML=`
+      <div class="r-mk">🎉 ${c+1}. ${CATS[c].name} クリア！</div>
+      <div class="r-score"><span class="big">${firstTry}</span> / ${total} 問を一発正解</div>
+      <div class="r-pts">このカテゴリで +${gained}pt ／ 累計 ${state.points}pt（レベル${lvOf(state.points)}）</div>
+      ${hasNext
+        ? `<button class="btn btn-dark btn-full r-next">次の10問へ ▶ ${c+2}. ${CATS[c+1].name}</button>`
+        : `<div class="r-allclear">🏆 全100項目を制覇しました！</div>`}`;
+    v.appendChild(res);
+    if(hasNext) res.querySelector(".r-next").onclick=()=>{ learnCat=c+1; render(); window.scrollTo(0,0); };
+  }
+
+  // カテゴリ帯
+  const band=document.createElement("div"); band.className="cat-band";
+  band.innerHTML=`<div class="cn">${c+1}. ${CATS[c].name} <span style="font-size:11px;color:#9a7a4a">${CATS[c].lv}</span></div>
+    <div class="cd">${CATS[c].desc}</div>
+    <div class="pg"><i style="width:${catUnderstood(c)/items.length*100}%"></i></div>
+    <div class="cd" style="margin-top:5px">学習した項目 ${catUnderstood(c)} / ${items.length}</div>`;
+  v.appendChild(band);
+
+  if(!catHasContent(c)){
+    const p=document.createElement("div"); p.className="empty";
+    p.innerHTML=`<div class="mk">このカテゴリのクイズは準備中</div>
+      解説・クイズコンテンツは山岡さん監修で順次追加します。`;
+    v.appendChild(p);
+    return;
+  }
+
+  items.forEach(it=>v.appendChild(quizCard(it)));
+}
+
+function quizCard(it){
+  const ct=CONTENT[it.no];
+  const understood=!!state.understood[it.no];
+  const card=document.createElement("div"); card.className="card"+(understood?" done":"");
+  card.innerHTML=`
+    <div class="c-top">
+      <div class="c-no">${String(it.no).padStart(2,"0")}</div>
+      <div class="c-title">${ct.short}</div>
+      ${understood?'<div class="c-tag ok">✓ 学習済み</div>':''}
+    </div>
+    <button class="btn ${understood?'btn-line':'btn-dark'} btn-full toggle">${understood?'復習する':'クイズに挑戦'}</button>
+    <div class="quiz">
+      <div class="q">Q. ${ct.q}</div>
+      <div class="opts"></div>
+      <div class="fb"></div>
+    </div>`;
+  const quiz=card.querySelector(".quiz");
+  const optsBox=card.querySelector(".opts");
+  const fb=card.querySelector(".fb");
+
+  // 選択肢をシャッフル
+  const order=[0,1]; if(Math.random()<0.5) order.reverse();
+  function buildOpts(){
+    optsBox.innerHTML="";
+    order.forEach(i=>{
+      const b=document.createElement("button"); b.className="opt"; b.dataset.i=i; b.textContent=ct.opts[i];
+      b.onclick=()=>answer(i,b);
+      optsBox.appendChild(b);
+    });
+  }
+  // 間違えても正解と解説を見せて先へ進む（10問やり切れば必ず結果が出る）
+  function answer(i,btn){
+    const right=(i===ct.correct);
+    const firstLearn=!state.understood[it.no];           // 初めて解く問題か（復習でない）
+    optsBox.querySelectorAll(".opt").forEach(o=>o.disabled=true);
+    btn.classList.add(right?"correct":"wrong");   // 押したボタンだけ色付け（正解は下の解説文で示す）
+    if(firstLearn){ state.tries[it.no]=1; state.firstTry[it.no]=right; }   // 一発正解だったか記録（スコア用）
+    const gain=(firstLearn&&right)?10:0;
+    state.understood[it.no]=true;                         // 解いた＝学習済み（クリア判定に使う）
+    if(gain>0) addPoints(gain); else save();
+    const cleared=catCleared(it.cat);
+    const vi=VI[it.no]||{};
+    fb.className="fb "+(right?"right":"miss")+" show";
+    fb.innerHTML=`
+      <div class="hd">${right
+        ? '⭕ Chính xác! 正解！ '+(gain>0?'<span class="pt">+'+gain+'pt</span>':'（復習）')
+        : '✕ Tiếc quá! Đáp án đúng / 正解は「'+ct.opts[ct.correct]+'」'}</div>
+      <div class="bi"><div class="v">${vi.e||''}</div><div class="j">${ct.explain}</div></div>
+      <div class="bi" style="margin-top:10px"><div class="v"><b>Vì sao quan trọng?</b> ${vi.w||''}</div><div class="j">なぜ大事？ ${ct.why}</div></div>
+      <div class="exrow">
+        <div class="b e-ok"><span class="t">⭕ OK</span><div class="v">${vi.ok||''}</div><div class="j">${ct.ok}</div></div>
+        <div class="b e-ng"><span class="t">❌ NG</span><div class="v">${vi.ng||''}</div><div class="j">${ct.ng}</div></div>
+      </div>
+      <button class="btn btn-dark btn-full next">${cleared?'結果を見る ▶':'次の問題へ ▶'}</button>`;
+    fb.querySelector(".next").onclick=()=>{
+      TAB="learn"; render();
+      const nxt=document.querySelector("#view-learn .card:not(.done)");   // 次の未回答カードへ
+      if(nxt) nxt.scrollIntoView({behavior:"smooth",block:"center"});
+      else window.scrollTo({top:0,behavior:"smooth"});                    // 全問終了→結果へ
+    };
+    if(gain>0) toast("+"+gain+"pt 獲得！");
+  }
+
+  card.querySelector(".toggle").onclick=function(){
+    const open=quiz.classList.toggle("open");
+    this.style.display="none";
+    if(open && !optsBox.children.length) buildOpts();
+  };
+  return card;
+}
+
+/* ---- やってみる（実践チェック） ---- */
+function isReturning(no){ const s=state.practice[no]; return s&&s.result==="ng"&&s.date&&dayDiff(s.date,todayStr())>=1; }
+function doneToday(no){ const s=state.practice[no]; return s&&s.date===todayStr()&&s.committed; }
+
+function renderDo(){
+  const v=document.getElementById("view-do"); v.innerHTML="";
+  const lead=document.createElement("div"); lead.className="lead";
+  lead.innerHTML="「まなぶ」で<b>学んだ項目だけ</b>がここに出ます。今日、職場や学校で『できたか』を振り返ろう。×は<b>翌日もう一度</b>返ってきます。";
+  v.appendChild(lead);
+
+  // 「まなぶ」で学んだ項目だけ（まなぶと1対1で連動）
+  let live=BASE.filter(x=>state.understood[x.no]);
+  // 並び：再出現→未チェック→完了
+  live.sort((a,b)=>{
+    const ra=isReturning(a.no),rb=isReturning(b.no); if(ra!==rb)return rb-ra;
+    const da=doneToday(a.no),db=doneToday(b.no); if(da!==db)return da-db;
+    return a.no-b.no;
+  });
+  const remain=live.filter(x=>!doneToday(x.no)).length;
+
+  // 完了サマリー（今日の全項目をチェックし終えたら最上部へ）
+  if(live.length>0 && remain===0){
+    const t=todayStr();
+    const today=live.filter(x=>{const s=state.practice[x.no];return s&&s.date===t&&s.committed;});
+    const cOk=today.filter(x=>state.practice[x.no].result==="ok").length;
+    const cPart=today.filter(x=>state.practice[x.no].result==="part").length;
+    const cNg=today.filter(x=>state.practice[x.no].result==="ng").length;
+    const gained=cOk*5+cPart*2+cNg*3;
+    const res=document.createElement("div"); res.className="result";
+    res.innerHTML=`
+      <div class="r-mk">🎉 今日のチェック完了！</div>
+      <div class="r-score"><span class="big">${cOk}</span> / ${today.length} できた</div>
+      <div class="r-tally">
+        <div class="t"><div class="n" style="color:var(--ok)">${cOk}</div><div class="l">できた</div></div>
+        <div class="t"><div class="n" style="color:var(--part)">${cPart}</div><div class="l">部分的</div></div>
+        <div class="t"><div class="n" style="color:var(--ng)">${cNg}</div><div class="l">明日再挑戦</div></div>
+      </div>
+      <div class="r-pts">今日 +${gained}pt ／ 累計 ${state.points}pt ・ 連続 ${state.streak}日</div>
+      ${cNg>0?`<div class="r-pts" style="margin-top:8px">×をつけた項目は、明日もう一度返ってきます。</div>`:`<div class="r-allclear">全部できた日！すばらしい 👏</div>`}`;
+    v.appendChild(res);
+  }
+
+  const h=document.createElement("div"); h.className="section-h";
+  h.innerHTML=`今日のチェック <span class="count">残り ${remain} / ${live.length}</span>`;
+  v.appendChild(h);
+
+  if(live.length===0){ v.insertAdjacentHTML("beforeend",`<div class="empty"><div class="mk">まだ項目がありません</div>まず「📚 まなぶ」でクイズを解くと、学んだ項目がここに出てきます。</div>`); return; }
+  live.forEach(it=>v.appendChild(doCard(it)));
+}
+
+function doCard(it){
+  const s=state.practice[it.no]||{};
+  const done=doneToday(it.no);
+  const ret=isReturning(it.no);
+  const ct=CONTENT[it.no];
+  const card=document.createElement("div"); card.className="card"+(done?" done":"");
+  let statusTag="";
+  if(done){ const m={ok:'✓ できた',part:'△ 部分的',ng:'再挑戦中'}; statusTag=`<div class="c-tag ${s.result==='ok'?'ok':'warn'}">${m[s.result]||''}</div>`; }
+  card.innerHTML=`
+    <div class="c-top">
+      <div class="c-no">${String(it.no).padStart(2,"0")}</div>
+      <div class="c-title">${disp(it)}</div>
+      ${statusTag}
+    </div>
+    ${ret?`<div class="remind">昨日の宿題：「<b>${escapeHtml(s.next||"次がんばる")}</b>」<br>今日はどうだった？</div>`:""}
+    ${ct?`<div class="reason"><div class="v">${(VI[it.no]||{}).w||''}</div><div class="j">${ct.why}</div></div>`:(it.reason?`<div class="reason">${escapeHtml(it.reason)}</div>`:"")}
+    <div class="eval">
+      <button class="b-ok" data-r="ok">できた</button>
+      <button class="b-part" data-r="part">部分的</button>
+      <button class="b-ng" data-r="ng">できなかった</button>
+    </div>
+    <div class="loop">
+      <p>大事なのは『次どうするか』。1行でいいので書こう。</p>
+      <label>なぜできなかった？</label>
+      <input class="in-why" placeholder="例：朝バタバタして忘れた" value="${escapeAttr(s.why)}">
+      <label>次はどうする？</label>
+      <input class="in-next" placeholder="例：前日の夜に準備しておく" value="${escapeAttr(s.next)}">
+      <div class="hint">2つとも書いてから保存してね</div>
+      <button class="save">保存（+3pt）</button>
+    </div>`;
+  const loop=card.querySelector(".loop");
+  card.querySelectorAll(".eval button").forEach(b=>{
+    if(done && b.dataset.r===s.result) b.classList.add("sel");
+    b.onclick=()=>{
+      card.querySelectorAll(".eval button").forEach(x=>x.classList.remove("sel"));
+      b.classList.add("sel");
+      if(b.dataset.r==="ng"){ loop.classList.add("open"); }
+      else{ loop.classList.remove("open"); commit(it.no,b.dataset.r,"",""); }
+    };
+  });
+  card.querySelector(".save").onclick=()=>{
+    const why=card.querySelector(".in-why").value.trim();
+    const next=card.querySelector(".in-next").value.trim();
+    if(!why||!next){ card.querySelector(".hint").classList.add("show"); return; }
+    commit(it.no,"ng",why,next);
+  };
+  return card;
+}
+
+function commit(no,result,why,next){
+  const already=doneToday(no);                       // 今日すでに記録済みなら加点しない（連打防止）
+  state.practice[no]={result,date:todayStr(),why,next,committed:true};
+  if(already){ save(); toast("記録を更新しました"); TAB="do"; render(); return; }
+  const gain=result==="ok"?5:(result==="part"?2:3); // ×でも改善を書けば+3（正直さと振り返りを評価）
+  addPoints(gain);
+  toast("+"+gain+"pt "+(result==="ng"?"よく振り返った！":"記録しました"));
+  TAB="do"; render();
+}
+
+/* ---- 進捗（地図） ---- */
+function renderMap(){
+  const v=document.getElementById("view-map"); v.innerHTML="";
+  const totU=BASE.filter(x=>state.understood[x.no]).length;
+  const lead=document.createElement("div"); lead.className="lead";
+  lead.innerHTML=`全100項目のうち <b>${totU}</b> を学習。カテゴリを順にクリアして登っていこう（RPG式）。`;
+  v.appendChild(lead);
+  CATS.forEach((cat,c)=>{
+    const items=catItems(c); const u=catUnderstood(c); const open=isOpen(c); const cl=catCleared(c);
+    const el=document.createElement("div");
+    el.className="mapcard"+(!open?" locked":"")+(cl?" cleared":"");
+    el.innerHTML=`
+      <div class="ico">${cl?"✓":(open?(c+1):"🔒")}</div>
+      <div class="m-mid">
+        <div class="m-name">${cat.name} <span style="font-weight:400;color:var(--ink-soft);font-size:11px">${cat.lv}</span></div>
+        <div class="m-sub">${open?`学習 ${u}/${items.length}`:`「${CATS[c-1].name}」をクリアで開放`}　${catHasContent(c)?"":"・クイズ準備中"}</div>
+        <div class="pg"><i style="width:${u/items.length*100}%"></i></div>
+      </div>`;
+    v.appendChild(el);
+  });
+}
+
+/* ============================================================
+   タブ切替・トースト
+   ============================================================ */
+function setView(id,active){
+  const el=document.getElementById(id);
+  el.style.display=active?"":"none";
+  if(!active) el.innerHTML="";   // 非表示ビューは中身も空に（透けて見える事故を防ぐ）
+}
+function render(){
+  renderHeader();
+  setView("view-learn", TAB==="learn");
+  setView("view-do", TAB==="do");
+  setView("view-map", TAB==="map");
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===TAB));
+  if(TAB==="learn") renderLearn();
+  else if(TAB==="do") renderDo();
+  else renderMap();
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{TAB=b.dataset.tab;render();window.scrollTo(0,0);});
+
+let toastT;
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),1800); }
+
+function resetAll(){ if(confirm("すべての記録を消して最初から始めますか？")){ localStorage.removeItem(KEY); state=load(); save(); TAB="learn"; learnCat=null; render(); } }
+
+render();
+</script>
+</body>
+</html>
