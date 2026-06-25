@@ -37,14 +37,19 @@
 
   /* キャラ枠（ユーザー提供画像 char/lvN.png を表示。無ければ番号プレースホルダー） */
   .charframe{position:relative;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;background:#f0e9dc;border:2.5px solid var(--line);flex-shrink:0;vertical-align:middle}
-  .charframe img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .charframe img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center}
   .charframe .charnum{font-family:var(--mincho);font-weight:600;color:#9a9488;line-height:1}
   .charframe.clk{filter:grayscale(1) brightness(.95);opacity:.4}
   .lvc1{border-color:#b9b4a8}.lvc2{border-color:#b89a72}.lvc3{border-color:#c39a55}.lvc4{border-color:#b07d3f}
   .lvc5{border-color:#9a6a3a}.lvc6{border-color:#b8863a}.lvc7{border-color:#6f6f9c}.lvc8{border-color:#caa23a;border-width:3px}
-  /* 図鑑 */
-  .dex{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 6px;margin:4px 0 8px}
+  /* 図鑑（全身・縦長フレーム） */
+  .dex{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 8px;margin:4px 0 8px}
   .dex .cell{text-align:center}
+  .dexfig{position:relative;width:100%;aspect-ratio:3/4;border-radius:12px;border:2px solid var(--line);background:#f1ead8;overflow:hidden;display:flex;align-items:flex-end;justify-content:center}
+  .dexfig img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:bottom center}
+  .dexfig .dexnum{position:absolute;z-index:0;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--mincho);font-weight:600;font-size:26px;color:#b8b0a2}
+  .dexfig.clk{filter:grayscale(1) brightness(.97);opacity:.45}
+  .dexfig.now{box-shadow:0 0 0 2.5px var(--accent),0 2px 8px rgba(154,106,58,.25)}
   .dex .cn{font-size:10.5px;font-weight:700;margin-top:5px;line-height:1.25}
   .dex .cell.lock .cn{color:var(--ink-soft);font-weight:400}
   .dex .cv{font-size:9.5px;color:#1d6b8c;line-height:1.2}
@@ -255,7 +260,7 @@
   <footer>
     記録は端末内にだけ保存されます（誰にも送信されません）。<br>
     Dữ liệu chỉ lưu trên thiết bị của bạn (không gửi đi đâu).<br>
-    プロトタイプ v1.6 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
+    プロトタイプ v1.7 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
     <button class="reset" onclick="resetAll()">データを消す</button>
   </footer>
 </div>
@@ -1135,13 +1140,13 @@ function renderMap(){
     const locked=lv>curLv, now=(lv===Math.min(curLv,8));
     const li=lv-1;
     dex.innerHTML+=`<div class="cell ${locked?'lock':''} ${now?'now':''}">
-      ${charFrame(lv,58,locked)}
+      <div class="dexfig lvc${lv}${locked?' clk':''}${now?' now':''}"><span class="dexnum">${lv}</span><img src="char/lv${lv}.png" alt="" onerror="this.remove()"></div>
       <div class="cn">${now?'▶ ':''}${LV_TITLES[li]}</div>
       <div class="cv">${locked?'🔒':LV_TITLES_VI[li]}</div></div>`;
   }
   v.appendChild(dex);
   const note=document.createElement("div"); note.className="lead"; note.style.marginTop="6px";
-  note.innerHTML=`100ptごとに1段階アップ。学んで名人を目指そう。<div class='leadv'>Mỗi 100 điểm lên 1 bậc. Học để trở thành Cao thủ.</div>`;
+  note.innerHTML=`ポイントを貯めて昇格。学んで名人を目指そう（名人＝3800pt）。<div class='leadv'>Tích điểm để thăng cấp. Học để trở thành Cao thủ (3800 điểm).</div>`;
   v.appendChild(note);
 }
 
