@@ -32,9 +32,23 @@
   .tabs button.on .tv{color:#cfe6ef}
   /* レベル＆ポイント */
   .lv{display:flex;align-items:center;gap:12px;margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:var(--shadow)}
-  .lv .badge{width:46px;height:46px;border-radius:12px;background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
-  .lv .badge .l{font-size:9px;letter-spacing:.1em;opacity:.8;line-height:1}
-  .lv .badge .n{font-family:var(--mincho);font-size:20px;font-weight:600;line-height:1.1}
+  .lv .badge{position:relative;width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .lvtag{position:absolute;bottom:-4px;right:-4px;background:var(--ink);color:#fff;font-size:9.5px;font-weight:700;border-radius:8px;padding:1px 5px;line-height:1.3;border:1.5px solid var(--paper)}
+
+  /* キャラ枠（ユーザー提供画像 char/lvN.png を表示。無ければ番号プレースホルダー） */
+  .charframe{position:relative;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;background:#f0e9dc;border:2.5px solid var(--line);flex-shrink:0;vertical-align:middle}
+  .charframe img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .charframe .charnum{font-family:var(--mincho);font-weight:600;color:#9a9488;line-height:1}
+  .charframe.clk{filter:grayscale(1) brightness(.95);opacity:.4}
+  .lvc1{border-color:#b9b4a8}.lvc2{border-color:#b89a72}.lvc3{border-color:#c39a55}.lvc4{border-color:#b07d3f}
+  .lvc5{border-color:#9a6a3a}.lvc6{border-color:#b8863a}.lvc7{border-color:#6f6f9c}.lvc8{border-color:#caa23a;border-width:3px}
+  /* 図鑑 */
+  .dex{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 6px;margin:4px 0 8px}
+  .dex .cell{text-align:center}
+  .dex .cn{font-size:10.5px;font-weight:700;margin-top:5px;line-height:1.25}
+  .dex .cell.lock .cn{color:var(--ink-soft);font-weight:400}
+  .dex .cv{font-size:9.5px;color:#1d6b8c;line-height:1.2}
+  .dex .cell.now .cn{color:var(--accent)}
   .lv .mid{flex:1;min-width:0}
   .lv .title{font-size:13px;font-weight:700}
   .lv .bar{height:7px;background:var(--accent-soft);border-radius:4px;margin-top:6px;overflow:hidden}
@@ -211,7 +225,7 @@
   <div class="brand">ESUHAI ｜ 日本で働く当たり前100 ／ 100 điều đương nhiên khi làm việc tại Nhật</div>
   <h1>当たり前100 <span class="hv">Atarimae 100 ・ 100 điều đương nhiên</span></h1>
   <div class="lv">
-    <div class="badge"><span class="l">LV</span><span class="n" id="lv-n">1</span></div>
+    <div class="badge" id="lv-badge"></div>
     <div class="mid">
       <div class="title" id="lv-title">新人</div>
       <div class="bar"><i id="lv-bar" style="width:0%"></i></div>
@@ -241,7 +255,7 @@
   <footer>
     記録は端末内にだけ保存されます（誰にも送信されません）。<br>
     Dữ liệu chỉ lưu trên thiết bị của bạn (không gửi đi đâu).<br>
-    プロトタイプ v1.3 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
+    プロトタイプ v1.4 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
     <button class="reset" onclick="resetAll()">データを消す</button>
   </footer>
 </div>
@@ -825,9 +839,15 @@ function escapeHtml(s){return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt
 function escapeAttr(s){return (s||"").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
 const disp=(it)=>CONTENT[it.no]?CONTENT[it.no].short:(it.title.length>26?it.title.slice(0,25)+"…":it.title);
 
+function charFrame(level,size,locked){
+  const li=Math.min(Math.max(level,1),8);
+  return `<span class="charframe lvc${li}${locked?' clk':''}" style="width:${size}px;height:${size}px">`
+    +`<img src="char/lv${li}.png" alt="" onerror="this.remove()">`
+    +`<span class="charnum" style="font-size:${Math.round(size*0.42)}px">${li}</span></span>`;
+}
 function renderHeader(){
   const lv=lvOf(state.points);
-  document.getElementById("lv-n").textContent=lv;
+  document.getElementById("lv-badge").innerHTML=charFrame(lv,52)+'<span class="lvtag">Lv'+lv+'</span>';
   const li=Math.min(lv-1,LV_TITLES.length-1);
   document.getElementById("lv-title").innerHTML=LV_TITLES[li]+' <span style="font-weight:400;color:#1d6b8c;font-size:11px">'+LV_TITLES_VI[li]+'</span>';
   document.getElementById("lv-pts").textContent=state.points+" pt（次のレベル / lên cấp まで "+(PTS_PER_LV-(state.points%PTS_PER_LV))+"）";
@@ -1097,6 +1117,25 @@ function renderMap(){
       </div>`;
     v.appendChild(el);
   });
+
+  // キャラ図鑑（レベルに応じて姿が育つ）
+  const curLv=lvOf(state.points);
+  const h=document.createElement("div"); h.className="section-h";
+  h.innerHTML=`キャラ図鑑 / Bộ sưu tập <span class="count">${Math.min(curLv,8)} / 8</span>`;
+  v.appendChild(h);
+  const dex=document.createElement("div"); dex.className="dex";
+  for(let lv=1;lv<=8;lv++){
+    const locked=lv>curLv, now=(lv===Math.min(curLv,8));
+    const li=lv-1;
+    dex.innerHTML+=`<div class="cell ${locked?'lock':''} ${now?'now':''}">
+      ${charFrame(lv,58,locked)}
+      <div class="cn">${now?'▶ ':''}${LV_TITLES[li]}</div>
+      <div class="cv">${locked?'🔒':LV_TITLES_VI[li]}</div></div>`;
+  }
+  v.appendChild(dex);
+  const note=document.createElement("div"); note.className="lead"; note.style.marginTop="6px";
+  note.innerHTML=`100ptごとに1段階アップ。学んで名人を目指そう。<div class='leadv'>Mỗi 100 điểm lên 1 bậc. Học để trở thành Cao thủ.</div>`;
+  v.appendChild(note);
 }
 
 /* ============================================================
