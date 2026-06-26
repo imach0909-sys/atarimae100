@@ -52,6 +52,8 @@
   .dexfig img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:center}
   .dexfig .dexnum{position:absolute;z-index:0;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--mincho);font-weight:600;font-size:26px;color:#b8b0a2}
   .dexfig.clk{filter:grayscale(1) brightness(.97);opacity:.45}
+  .dexfig.myst{background:repeating-linear-gradient(135deg,#f5f0e6,#f5f0e6 6px,#efe8da 6px,#efe8da 12px);border-style:dashed;border-color:#d8cfbd}
+  .dexfig .dexq{font-family:var(--mincho);font-weight:600;font-size:42px;color:#cbc3b4;line-height:1}
   .dexfig.now{box-shadow:0 0 0 2.5px var(--accent),0 2px 8px rgba(154,106,58,.25)}
   .dex .cn{font-size:10.5px;font-weight:700;margin-top:5px;line-height:1.25}
   .dex .cell.lock .cn{color:var(--ink-soft);font-weight:400}
@@ -263,7 +265,7 @@
   <footer>
     記録は端末内にだけ保存されます（誰にも送信されません）。<br>
     Dữ liệu chỉ lưu trên thiết bị của bạn (không gửi đi đâu).<br>
-    プロトタイプ v2.0 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
+    プロトタイプ v2.1 ・ 当たり前100＋危機管理24 ／ ふりがな・ベトナム語併記（要・山岡さん監修）<br>
     <button class="reset" onclick="resetAll()">データを消す</button>
   </footer>
 </div>
@@ -1143,8 +1145,8 @@ function renderMap(){
     const locked=lv>curLv, now=(lv===Math.min(curLv,8));
     const li=lv-1;
     dex.innerHTML+=`<div class="cell ${locked?'lock':''} ${now?'now':''}">
-      <div class="dexfig lvc${lv}${locked?' clk':''}${now?' now':''}"><span class="dexnum">${lv}</span><img src="char/lv${lv}.jpg?v=3" alt="" onerror="this.remove()"></div>
-      <div class="cn">${now?'▶ ':''}${locked?'🔒':LV_TITLES_VI[li]}</div></div>`;
+      <div class="dexfig ${locked?'myst':'lvc'+lv}${now?' now':''}">${locked?'<span class="dexq">？</span>':`<img src="char/lv${lv}.jpg?v=3" alt="" onerror="this.remove()">`}</div>
+      <div class="cn">${now?'▶ ':''}${locked?'？？？':LV_TITLES_VI[li]}</div></div>`;
   }
   v.appendChild(dex);
   const note=document.createElement("div"); note.className="lead"; note.style.marginTop="6px";
